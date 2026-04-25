@@ -5,6 +5,7 @@ import Login from './pages/Login';
 //import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import MyWallet from "./pages/MyWallet";
+import Investments from "./pages/Investments";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/my-wallet" element={<MyWallet />} />
+        <Route path="/investments" element={<Investments />} />
       </Routes>
     </Router>
   );
