@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import MyWallet from "./pages/MyWallet";
 import Investments from "./pages/Investments";
+import Analytics from "./pages/Analytics";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/my-wallet" element={<MyWallet />} />
         <Route path="/investments" element={<Investments />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </Router>
   );
