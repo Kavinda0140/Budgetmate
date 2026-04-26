@@ -1,9 +1,12 @@
 import os
 import oracledb
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+base_dir = Path(__file__).resolve().parent.parent.parent
+env_path = base_dir / '.env'
+load_dotenv(dotenv_path=env_path)
 
 def get_db_connection():
     try:
@@ -12,19 +15,24 @@ def get_db_connection():
         db_dsn = os.getenv('DB_DSN')
         wallet_location = os.getenv('WALLET_LOCATION')
         
-        if not all([db_user, db_password, db_dsn, wallet_location]):
-            raise ValueError("Database connection variables are missing in .env")
-
-        # Connect to Oracle Autonomous Database using Thin mode and Wallet
         connection = oracledb.connect(
             user=db_user,
             password=db_password,
             dsn=db_dsn,
             config_dir=wallet_location,
             wallet_location=wallet_location,
-            wallet_password=None # ewallet.p12 won't be used, cwallet.sso will be used automatically
+            wallet_password=db_password
         )
         return connection
     except Exception as e:
-        print(f"Error establishing database connection: {e}")
+        print(f"❌ Connection Error: {e}")
         return None
+
+def init_db():
+    print("🔄 Connecting to Oracle Cloud...")
+    conn = get_db_connection()
+    if conn:
+        print("✅ Successfully connected to Oracle Cloud Database!")
+        conn.close()
+    else:
+        print("❌ Connection failed!")

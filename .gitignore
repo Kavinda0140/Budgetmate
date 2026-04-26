@@ -1,11 +1,28 @@
-# Backend dependencies and virtual environments
-backend/__pycache__/
-backend/venv/
-backend/env/
-backend/.venv/
+﻿# Python
+**/__pycache__/
+*.py[cod]
+env/
+venv/
+.env/
 
-# Environment Variables
-backend/.env
+# Secrets
+.env
+.env.*
+auth_key.json
 
-# Oracle Database Wallet
+# Frontend
+node_modules/
+dist/
+build/
+
+# IDE & OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Database logs
+*.log
+sqlnet.log
+
+# Sensitive Wallet Data
 backend/wallet/
