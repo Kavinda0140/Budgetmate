@@ -1,27 +1,35 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import "./App.css";
-
-// Import pages
-import Login from './pages/Login';
+import Home from './pages/Home';
+import Login from './pages/login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
+import MyWallet from "./pages/MyWallet";
+import Investments from "./pages/Investments";
+import Analytics from "./pages/Analytics";
+import Expenses from "./pages/Expenses";
+import Bills from "./pages/Bills";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/my-wallet" element={<MyWallet />} />
+        <Route path="/investments" element={<Investments />} />
+        <Route path="/analytics" element={<Analytics />} />
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/bills" element={<Bills />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
     </Router>
   );
 }
 
-export default App;
+export default App;
