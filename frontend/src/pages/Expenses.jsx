@@ -26,7 +26,7 @@ const Expenses = () => {
       {/*  Dynamic Alerts based on Logic */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {overspentCategory ? (
-          <div className="bg-red-50 border border-red-100 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="bg-red-50 border border-red-100 p-6 rounded-4xl flex gap-4 items-start animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="p-3 bg-red-100 text-red-600 rounded-2xl"><AlertCircle size={24} /></div>
             <div>
               <h4 className="font-black text-red-900 text-sm mb-1">Overspending Alert</h4>
@@ -36,7 +36,7 @@ const Expenses = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in duration-500">
+          <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-4xl flex gap-4 items-start animate-in fade-in duration-500">
             <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl"><AlertCircle size={24} /></div>
             <div>
               <h4 className="font-black text-emerald-900 text-sm mb-1">Budget on Track</h4>
@@ -45,7 +45,7 @@ const Expenses = () => {
           </div>
         )}
         
-        <div className="bg-blue-50 border border-blue-100 p-6 rounded-[2rem] flex gap-4 items-start">
+        <div className="bg-blue-50 border border-blue-100 p-6 rounded-4xl flex gap-4 items-start">
           <div className="p-3 bg-blue-100 text-blue-600 rounded-2xl"><Lightbulb size={24} /></div>
           <div>
             <h4 className="font-black text-blue-900 text-sm mb-1">Smart Tip</h4>
@@ -134,7 +134,7 @@ const Expenses = () => {
 
       {/*  Simple Add Category Modal Placeholder */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
           <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
             <button onClick={() => setIsModalOpen(false)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><X size={24}/></button>
             <h3 className="text-2xl font-black text-slate-900 mb-2">New Category</h3>

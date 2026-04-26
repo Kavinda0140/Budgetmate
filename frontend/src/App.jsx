@@ -20,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/my-wallet" element={<MyWallet />} />
         <Route path="/investments" element={<Investments />} />
@@ -32,4 +33,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;
