@@ -1,16 +1,32 @@
-# React + Vite
+# BudgetMate Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for BudgetMate, an expense tracking system. It is built with React, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Technologies Used
+- **Framework:** React
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS v4
+- **Routing:** React Router
+- **Icons:** Lucide React
+- **Charts:** Recharts
+- **HTTP Client:** Axios
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup Instructions
 
-## React Compiler
+### 1. Install Dependencies
+Open a terminal in the `frontend/` directory and run:
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 2. Run the Development Server
+Start the Vite development server:
+```bash
+npm run dev
+```
 
-## Expanding the ESLint configuration
+### 3. View the Application
+Open your browser and navigate to:
+[http://localhost:5173](http://localhost:5173)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*(Note: If port 5173 is in use, Vite will automatically select the next available port. Check your terminal output for the exact URL).*
