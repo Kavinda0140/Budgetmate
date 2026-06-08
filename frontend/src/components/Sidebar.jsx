@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom'; 
+import { Link, useLocation, useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../context/AuthContext'; 
 import { 
   Home,
   LayoutDashboard, 
@@ -14,6 +15,13 @@ import {
 
 const Sidebar = () => {
   const location = useLocation(); 
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  }; 
 
   const menuItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -71,7 +79,10 @@ const Sidebar = () => {
         </Link>
 
         {/* Log Out Button */}
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all cursor-pointer">
+        <button 
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all cursor-pointer"
+        >
           <LogOut size={18} /> Log out
         </button>
       </div>

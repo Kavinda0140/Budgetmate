@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, X } from "lucide-react";
+import { Mail, Lock, User, X, Eye, EyeOff } from "lucide-react";
 import API from '../services/api';
 import toast from 'react-hot-toast';
 import logoImg from "../assets/logo.png";
@@ -9,6 +9,8 @@ const Register = ({ isOpen, onClose, openLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   if (!isOpen) return null;
 
@@ -16,6 +18,10 @@ const Register = ({ isOpen, onClose, openLogin }) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('Passwords do not match!');
+      return;
+    }
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters long!');
       return;
     }
 
@@ -74,13 +80,42 @@ const Register = ({ isOpen, onClose, openLogin }) => {
             <div>
               <label className="text-[10px] font-bold text-gray-400 uppercase">Password</label>
               <div className="flex items-center border-2 border-gray-50 rounded-xl px-3 py-2 mt-1 focus-within:border-blue-900">
-                <input type="password" placeholder="••••" className="w-full outline-none text-sm" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="••••" 
+                  className="w-full outline-none text-sm pr-1" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
+              <p className="text-[9px] text-gray-400 mt-1">Must be at least 6 characters</p>
             </div>
             <div>
               <label className="text-[10px] font-bold text-gray-400 uppercase">Confirm</label>
               <div className="flex items-center border-2 border-gray-50 rounded-xl px-3 py-2 mt-1 focus-within:border-blue-900">
-                <input type="password" placeholder="••••" className="w-full outline-none text-sm" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                <input 
+                  type={showConfirmPassword ? "text" : "password"} 
+                  placeholder="••••" 
+                  className="w-full outline-none text-sm pr-1" 
+                  value={confirmPassword} 
+                  onChange={(e) => setConfirmPassword(e.target.value)} 
+                  required 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
           </div>

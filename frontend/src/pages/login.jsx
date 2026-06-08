@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Mail, Lock, X } from "lucide-react"; 
+import { Mail, Lock, X, Eye, EyeOff } from "lucide-react"; 
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import toast from 'react-hot-toast';
@@ -8,6 +8,7 @@ import logoImg from "../assets/logo.png";
 const Login = ({ isOpen, onClose, openRegister, openForgot }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   if (!isOpen) return null;
@@ -83,7 +84,7 @@ const Login = ({ isOpen, onClose, openRegister, openForgot }) => {
               Email Address
             </label>
             <div className="flex items-center border-2 border-slate-100 rounded-2xl px-4 py-3 focus-within:border-blue-600 transition-all bg-slate-50/50">
-              <Mail size={18} className="text-slate-400 mr-3" />
+              <Mail size={18} className="text-slate-400 mr-3 shrink-0" />
               <input
                 type="email"
                 placeholder="name@company.com"
@@ -109,15 +110,23 @@ const Login = ({ isOpen, onClose, openRegister, openForgot }) => {
               </button>
             </div>
             <div className="flex items-center border-2 border-slate-100 rounded-2xl px-4 py-3 focus-within:border-blue-600 transition-all bg-slate-50/50">
-              <Lock size={18} className="text-slate-400 mr-3" />
+              <Lock size={18} className="text-slate-400 mr-3 shrink-0" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 className="w-full outline-none text-sm font-medium bg-transparent text-slate-900"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="ml-2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer shrink-0"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 

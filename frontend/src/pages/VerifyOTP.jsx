@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Lock, Hash, X, ArrowLeft } from "lucide-react";
+import { Lock, Hash, X, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import API from '../services/api';
 import toast from 'react-hot-toast';
 import logoImg from "../assets/logo.png";
@@ -7,6 +7,7 @@ import logoImg from "../assets/logo.png";
 const VerifyOTP = ({ isOpen, onClose, email, openLogin }) => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   if (!isOpen) return null;
 
@@ -97,13 +98,20 @@ const VerifyOTP = ({ isOpen, onClose, email, openLogin }) => {
             <div className="flex items-center border-2 border-slate-100 rounded-2xl px-4 py-3 mt-1.5 focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-50 transition-all">
               <Lock size={18} className="text-slate-400 mr-3" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full outline-none text-sm font-medium bg-transparent"
+                className="w-full outline-none text-sm font-medium bg-transparent pr-2"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 

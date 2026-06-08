@@ -61,7 +61,7 @@ def authenticate_user(email, password):
         return None, "FAILED"
     except Exception as e:
         logger.error(f"[ERROR] Login Error: {str(e)}")
-        return "ERROR"
+        return None, "ERROR"
     finally:
         if conn:
             cursor.close()

@@ -3,7 +3,9 @@ import bcrypt
 import smtplib
 from datetime import datetime, timedelta
 from email.message import EmailMessage
-from jose import jwt
+from jose import jwt, JWTError
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -68,3 +70,23 @@ BudgetMate Team
     except Exception as e:
         print(f"❌ Email Sending Error: {e}")
         return False
+
+# --- JWT Token Verification Dependency ---
+security_scheme = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security_scheme)):
+    token = credentials.credentials
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        user_id: int = payload.get("user_id")
+        if email is None or user_id is None:
+            raise credentials_exception
+        return {"email": email, "user_id": user_id}
+    except JWTError:
+        raise credentials_exception

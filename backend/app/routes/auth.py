@@ -18,6 +18,8 @@ def login(user: UserLogin):
     data, result = auth_service.authenticate_user(user.email, user.password)
     if result == "SUCCESS":
         return data
+    if result == "ERROR":
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Database connection or internal server error")
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
 # --- 3. Forgot Password (OTP Request) ---
