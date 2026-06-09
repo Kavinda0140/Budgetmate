@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { CalendarDays, Bell, Sparkles, Plus, ChevronLeft, ChevronRight, List } from 'lucide-react';
+import { CalendarDays, Bell, Sparkles, Plus, ChevronLeft, ChevronRight, List, Info } from 'lucide-react';
 import API from '../services/api';
 
 const DEFAULT_ICON = "https://img.icons8.com/fluency/48/subscription.png";
@@ -12,6 +12,13 @@ const iconPresets = {
   YouTube: { icon_url: "https://img.icons8.com/color/48/youtube-play.png", bg_color: "bg-red-50" },
   Amazon:  {icon_url: "https://img.icons8.com/color/48/amazon.png",bg_color: "bg-yellow-50"}
 };
+
+const optimizationTooltipLines = [
+  'Most expensive monthly service — highest monthly subscription amount.',
+  'Large annual payment — highest annual subscription amount.',
+  'Multiple due days — when more than one subscription shares the same due day.',
+  'High monthly commitment — total monthly cost over $100 or 4+ monthly subscriptions.'
+];
 
 const Bills = () => {
   const today = new Date();
@@ -39,6 +46,7 @@ useEffect(() => {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showManageModal, setShowManageModal] = useState(false);
+  const [showOptimizeModal, setShowOptimizeModal] = useState(false);
   const [selectedSub, setSelectedSub] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -168,6 +176,89 @@ useEffect(() => {
     () => subscriptions.filter(isVisibleInCurrentMonth),
     [subscriptions, currentMonthIndex]
   );
+
+  const annualSubs = useMemo(
+    () => subscriptions.filter(sub => sub.billing_type === 'Annual'),
+    [subscriptions]
+  );
+
+  const monthlySubs = useMemo(
+    () => subscriptions.filter(sub => sub.billing_type === 'Monthly'),
+    [subscriptions]
+  );
+
+  const totalAnnual = useMemo(
+    () => annualSubs.reduce((acc, curr) => acc + Number(curr.amount || 0), 0),
+    [annualSubs]
+  );
+
+  const totalMonthlyCommitmentOnly = useMemo(
+    () => monthlySubs.reduce((acc, curr) => acc + Number(curr.amount || 0), 0),
+    [monthlySubs]
+  );
+
+  const topMonthlyService = useMemo(() => {
+    return [...monthlySubs]
+      .sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0))[0];
+  }, [monthlySubs]);
+
+  const largestAnnualService = useMemo(() => {
+    return [...annualSubs]
+      .sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0))[0];
+  }, [annualSubs]);
+
+  const duplicateDueGroups = useMemo(() => {
+    const groups = {};
+    subscriptions.forEach((sub) => {
+      const day = Number(sub.due_day);
+      if (!day) return;
+      groups[day] = groups[day] || [];
+      groups[day].push(sub);
+    });
+    return Object.values(groups).filter(group => group.length > 1);
+  }, [subscriptions]);
+
+  const optimizeRecommendations = useMemo(() => {
+    const suggestions = [];
+
+    if (topMonthlyService) {
+      suggestions.push({
+        id: 'top-monthly',
+        title: 'Most expensive monthly service',
+        description: `Your most expensive monthly service is ${topMonthlyService.name} ($${Number(topMonthlyService.amount || 0).toFixed(2)}).`, 
+        detail: `Review this service to reduce your monthly spend.`
+      });
+    }
+
+    if (largestAnnualService) {
+      suggestions.push({
+        id: 'large-annual',
+        title: 'Large annual payment',
+        description: `${largestAnnualService.name || 'Insurance'} has a large annual payment of $${Number(largestAnnualService.amount || 0).toFixed(2)}.`, 
+        detail: `That is about $${(Number(largestAnnualService.amount || 0) / 12).toFixed(2)} per month.`
+      });
+    }
+
+    if (duplicateDueGroups.length > 0) {
+      suggestions.push({
+        id: 'same-day',
+        title: 'Multiple due days',
+        description: `You have ${duplicateDueGroups.length} days with more than one subscription due.`, 
+        detail: 'Spreading payments across different dates can reduce pressure on the same billing day.'
+      });
+    }
+
+    if (totalMonthlyCommitmentOnly > 100 || monthlySubs.length >= 4) {
+      suggestions.push({
+        id: 'high-commitment',
+        title: 'High monthly commitment',
+        description: `Your monthly commitment is $${totalMonthlyCommitmentOnly.toFixed(2)}.`, 
+        detail: 'Canceling one or two of your highest monthly plans could create meaningful savings.'
+      });
+    }
+
+    return suggestions;
+  }, [topMonthlyService, largestAnnualService, duplicateDueGroups, totalMonthlyCommitmentOnly, monthlySubs.length]);
 
   const totalMonthly = useMemo(() => {
     return visibleSubs
@@ -327,7 +418,12 @@ useEffect(() => {
                    <h4 className="text-2xl font-black mb-2">Smart Cancellation</h4>
                    <p className="text-blue-200/80 text-sm">Save more in <b>{months[currentMonthIndex]}</b> by removing unused subscriptions.</p>
                 </div>
-                <button className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-xs font-black shadow-lg active:scale-95 transition-all uppercase tracking-widest">Optimize</button>
+                <button
+                  className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-xs font-black shadow-lg active:scale-95 transition-all uppercase tracking-widest"
+                  onClick={() => setShowOptimizeModal(true)}
+                >
+                  Optimize
+                </button>
              </div>
           </div>
         </div>
@@ -653,6 +749,100 @@ useEffect(() => {
                   <p className="text-sm text-slate-500 mt-2">Choose one from the left to update or cancel it.</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    {showOptimizeModal && (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 py-8">
+        <div className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-slate-200">
+            <div>
+              <h3 className="text-xl font-bold">Smart Cancellation</h3>
+              <p className="text-sm text-slate-500">Recommendations to reduce your subscription spend.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowOptimizeModal(false)}
+              className="px-4 py-2 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200"
+            >
+              Close
+            </button>
+          </div>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Active Subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900">{subscriptions.length}</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Annual Subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900">{annualSubs.length}</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Total cost of monthly subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900">${totalMonthlyCommitmentOnly.toFixed(2)}</p>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Total cost of annual subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900">${totalAnnual.toFixed(2)}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <h4 className="text-lg font-bold">Recommendations</h4>
+                <div className="relative group">
+                  <Info size={16} className="text-slate-400 hover:text-slate-700" />
+                  <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-600 shadow-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <p className="font-semibold text-slate-900 mb-2">How recommendations are calculated</p>
+                    <ul className="list-disc space-y-1 pl-4">
+                      {optimizationTooltipLines.map((line, index) => (
+                        <li key={index}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="grid gap-4">
+                {optimizeRecommendations.length === 0 ? (
+                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
+                    No optimization recommendations found right now.
+                  </div>
+                ) : optimizeRecommendations.map((rec) => (
+                  <div key={rec.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.3em] text-blue-500">{rec.title}</p>
+                        <p className="mt-3 text-sm font-semibold text-slate-900">{rec.description}</p>
+                      </div>
+                      <span className="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold text-blue-700 uppercase tracking-[0.2em]">Review</span>
+                    </div>
+                    <p className="mt-3 text-sm text-slate-500">{rec.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 md:flex-row md:justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowOptimizeModal(false);
+                  openManageBilling();
+                }}
+                className="w-full md:w-auto rounded-2xl bg-blue-600 px-6 py-3 text-sm font-black text-white hover:bg-blue-500"
+              >
+                Review Subscriptions
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowOptimizeModal(false)}
+                className="w-full md:w-auto rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
