@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { CalendarDays, Bell, Sparkles, Plus, ChevronLeft, ChevronRight, List } from 'lucide-react';
+import API from '../services/api';
 
 const Bills = () => {
   const [selectedDate, setSelectedDate] = useState(12);
@@ -9,6 +10,21 @@ const Bills = () => {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const [currentMonthIndex, setCurrentMonthIndex] = useState(5);
   const [currentYear, setCurrentYear] = useState(2024);
+
+  const [subscriptions, setSubscriptions] = useState([]);
+
+const loadSubscriptions = async () => {
+  try {
+    const response = await API.get('/subscriptions/');
+    setSubscriptions(response.data);
+  } catch (error) {
+    console.error('Failed to load subscriptions:', error);
+  }
+};
+
+useEffect(() => {
+  loadSubscriptions();
+}, []);  
 
   const handlePrevMonth = () => {
     if (currentMonthIndex === 0) {
@@ -28,16 +44,9 @@ const Bills = () => {
     }
   };
 
-  const subscriptions = [
-    { name: "Google One", day: 10, amount: 99.99, type: "Annual", icon: "https://img.icons8.com/color/48/google-logo.png", bgColor: "bg-slate-50" },
-    { name: "Spotify Premium", day: 22, amount: 16.99, type: "Monthly", icon: "https://img.icons8.com/color/48/spotify--v1.png", bgColor: "bg-[#1ED760]/10" },
-    { name: "Netflix 4K", day: 5, amount: 18.00, type: "Monthly", icon: "https://img.icons8.com/color/48/netflix.png", bgColor: "bg-red-50" },
-    { name: "Insurance Premium", day: 5, amount: 425.00, type: "Annual", icon: "https://img.icons8.com/fluency/48/shield.png", bgColor: "bg-blue-50" },
-  ];
-
   const totalMonthly = useMemo(() => {
     return subscriptions
-      .filter(sub => sub.type === "Monthly")
+      .filter(sub => sub.billing_type === "Monthly")
       .reduce((acc, curr) => acc + curr.amount, 0)
       .toFixed(2);
   }, [subscriptions]);
@@ -109,17 +118,17 @@ const Bills = () => {
                 {subscriptions.map((sub, i) => (
                   <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-white transition-all group">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 ${sub.bgColor} rounded-2xl flex items-center justify-center`}>
-                        <img src={sub.icon} className="w-7 h-7 object-contain" alt="" />
+                      <div className={`w-12 h-12 ${sub.bg_color} rounded-2xl flex items-center justify-center`}>
+                        <img src={sub.icon_url} className="w-7 h-7 object-contain" alt="" />
                       </div>
                       <div>
                         <p className="font-bold text-slate-900">{sub.name}</p>
-                        <p className="text-xs text-slate-400 font-medium tracking-tight">Due on {months[currentMonthIndex]} {sub.day}</p>
+                        <p className="text-xs text-slate-400 font-medium tracking-tight">Due on {months[currentMonthIndex]} {sub.due_day}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-black text-lg text-slate-900">${sub.amount}</p>
-                      <p className="text-[10px] font-bold text-blue-500 uppercase">{sub.type}</p>
+                      <p className="text-[10px] font-bold text-blue-500 uppercase">{sub.billing_type}</p>
                     </div>
                   </div>
                 ))}
@@ -151,15 +160,15 @@ const Bills = () => {
              
              <div className="space-y-7">
                 {subscriptions.map((sub, i) => (
-                  <div key={i} className={`flex items-center justify-between group cursor-pointer p-1 rounded-2xl transition-all ${selectedDate === sub.day ? 'bg-blue-50/50' : ''}`}>
+                  <div key={i} className={`flex items-center justify-between group cursor-pointer p-1 rounded-2xl transition-all ${selectedDate === sub.due_day ? 'bg-blue-50/50' : ''}`}>
                     <div className="flex items-center gap-4">
-                       <div className={`w-14 h-14 ${sub.bgColor} rounded-2xl flex items-center justify-center border border-slate-50 shadow-sm transition-transform group-hover:scale-110`}>
-                          <img src={sub.icon} alt={sub.name} className="w-8 h-8 object-contain" />
+                       <div className={`w-14 h-14 ${sub.bg_color} rounded-2xl flex items-center justify-center border border-slate-50 shadow-sm transition-transform group-hover:scale-110`}>
+                          <img src={sub.icon_url} alt={sub.name} className="w-8 h-8 object-contain" />
                        </div>
                        <div>
                           <p className="font-bold text-slate-900 text-[15px]">{sub.name}</p>
-                          <p className={`text-[10px] font-black uppercase mt-0.5 ${selectedDate === sub.day ? 'text-blue-600 animate-pulse' : 'text-slate-400'}`}>
-                             {selectedDate === sub.day ? "Due Today" : `Day ${sub.day}`}
+                          <p className={`text-[10px] font-black uppercase mt-0.5 ${selectedDate === sub.due_day ? 'text-blue-600 animate-pulse' : 'text-slate-400'}`}>
+                             {selectedDate === sub.due_day ? "Due Today" : `Day ${sub.due_day}`}
                           </p>
                        </div>
                     </div>
