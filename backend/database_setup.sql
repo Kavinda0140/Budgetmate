@@ -113,3 +113,31 @@ BEGIN
     END
 END
 GO
+
+-- 6. Create Update Account Procedure
+CREATE OR ALTER PROCEDURE update_account_proc
+  @account_id   INT,
+  @user_id      INT,
+  @account_name VARCHAR(100) = NULL,
+  @account_type VARCHAR(50) = NULL,
+  @balance      DECIMAL(18,2) = NULL,
+  @card_number  VARCHAR(20) = NULL,
+  @expiry_date  VARCHAR(5) = NULL,
+  @color_theme  VARCHAR(50) = NULL
+AS
+BEGIN
+  SET NOCOUNT ON
+
+  UPDATE Accounts
+  SET account_name = COALESCE(@account_name, account_name),
+      account_type = COALESCE(@account_type, account_type),
+      balance      = COALESCE(@balance, balance),
+      card_number  = COALESCE(@card_number, card_number),
+      expiry_date  = COALESCE(@expiry_date, expiry_date),
+      color_theme  = COALESCE(@color_theme, color_theme)
+  WHERE id      = @account_id
+    AND user_id = @user_id
+
+  SELECT @@ROWCOUNT AS rows_affected
+END
+GO

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.account import AccountCreate, AccountOut
+from app.schemas.account import AccountCreate, AccountOut, AccountUpdate
 from app.services import account_service
 from app.utils.security import get_current_user
 from typing import List
@@ -41,3 +41,19 @@ def remove_account(
 
     if not success:
         raise HTTPException(status_code=404, detail="Account not found or not yours")
+
+
+# --- PUT /accounts/{account_id} → update an account ---
+@router.put("/{account_id}", status_code=200)
+def modify_account(
+    account_id: int,
+    data: AccountUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    user_id = current_user["user_id"]
+    success = account_service.update_account(account_id, user_id, data)
+
+    if not success:
+        raise HTTPException(status_code=404, detail="Account not found or not yours")
+
+    return {"message": "Account updated"}

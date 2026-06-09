@@ -13,6 +13,16 @@ class AccountCreate(BaseModel):
     color_theme: Optional[str] = "bg-blue-600"
 
 
+# --- Request: what frontend sends when updating an account ---
+class AccountUpdate(BaseModel):
+    account_name: Optional[str] = None
+    account_type: Optional[str] = None
+    balance: Optional[float] = None
+    card_number: Optional[str] = None
+    expiry_date: Optional[str] = None
+    color_theme: Optional[str] = None
+
+
 # --- Response: what backend sends back to frontend ---
 class AccountOut(BaseModel):
     id: int

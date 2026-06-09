@@ -85,3 +85,38 @@ def delete_account(account_id: int, user_id: int):
         if conn:
             cursor.close()
             conn.close()
+
+
+# --- 4. Update an account (only if it belongs to this user) ---
+def update_account(account_id: int, user_id: int, data):
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "EXEC update_account_proc ?, ?, ?, ?, ?, ?, ?, ?",
+            (
+                account_id,
+                user_id,
+                data.account_name,
+                data.account_type,
+                data.balance,
+                data.card_number,
+                data.expiry_date,
+                data.color_theme,
+            )
+        )
+        row = cursor.fetchone()
+        success = (row[0] > 0) if row else False
+
+        conn.commit()
+        return success
+
+    except Exception as e:
+        logger.error(f"[ERROR] update_account: {str(e)}")
+        return False
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
