@@ -9,6 +9,19 @@ const authHeaders = () => ({
   Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
 
+// ── decode JWT to get the user's name ──────────────────────────────────────
+const getLoggedInName = () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return "Card Holder";
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    // adjust the key to match whatever your JWT uses: full_name / name / username / sub
+    return payload.sub?.split("@")[0].replace(/[._]/g, " ") || "Card Holder";
+  } catch {
+    return "Card Holder";
+  }
+};
+
 const colorOptions = [
   { label: "Blue",   value: "bg-blue-600"    },
   { label: "Dark",   value: "bg-slate-900"   },
@@ -18,20 +31,21 @@ const colorOptions = [
   { label: "Amber",  value: "bg-amber-600"   },
 ];
 
-const accountTypes = ["Checking", "Savings", "Credit Card", "Investment", "Cash"];
-const networkTypes = ["Visa", "Mastercard", "Amex"];
-const cardTypes    = ["Debit", "Credit"];
+const accountTypes  = ["Checking", "Savings", "Credit Card", "Investment", "Cash"];
+const networkTypes  = ["Visa", "Mastercard", "Amex"];
+const cardTypes     = ["Debit", "Credit"];
 
 const emptyForm = {
   account_name: "",
+  card_name:    "",        // leave blank = use logged-in user name
   account_type: "Checking",
-  balance: "",
-  card_number: "",
-  expiry_date: "",
-  cvv: "",
+  balance:      "",
+  card_number:  "",
+  expiry_date:  "",
+  cvv:          "",
   card_network: "Visa",
-  card_type: "Debit",
-  color_theme: "bg-blue-600",
+  card_type:    "Debit",
+  color_theme:  "bg-blue-600",
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -52,68 +66,44 @@ const formatExpiry = (raw) => {
   if (digits.length <= 2) {
     let mm = parseInt(digits, 10);
     if (digits.length === 2) {
-      if (mm < 1) mm = 1;
+      if (mm < 1)  mm = 1;
       if (mm > 12) mm = 12;
       return String(mm).padStart(2, "0");
     }
     return digits;
   }
   let mm = parseInt(digits.slice(0, 2), 10);
-  if (mm < 1) mm = 1;
+  if (mm < 1)  mm = 1;
   if (mm > 12) mm = 12;
   return String(mm).padStart(2, "0") + "/" + digits.slice(2, 4);
 };
 
 const isExpiryValid = (val) => {
-  if (val.length !== 5) return true; // only validate when complete
+  if (val.length !== 5) return true;
   const [m, y] = val.split("/").map(Number);
   const now = new Date();
-  const cy = now.getFullYear() % 100;
-  const cm = now.getMonth() + 1;
+  const cy  = now.getFullYear() % 100;
+  const cm  = now.getMonth() + 1;
   return m >= 1 && m <= 12 && (y > cy || (y === cy && m >= cm));
 };
 
 const cvvLength = (network) => (network === "Amex" ? 4 : 3);
 
-// ─── Network Logo ─────────────────────────────────────────────────────────────
-const NetworkLogo = ({ network, size = "sm" }) => {
-  const base = size === "lg" ? "text-sm px-3 py-1" : "text-[10px] px-2 py-0.5";
-  if (network === "Visa") {
-    return (
-      <span className={`font-black italic tracking-tighter text-white/90 ${size === "lg" ? "text-xl" : "text-sm"}`}>
-        VISA
-      </span>
-    );
-  }
-  if (network === "Mastercard") {
-    return (
-      <svg width={size === "lg" ? 44 : 32} height={size === "lg" ? 28 : 20} viewBox="0 0 44 28">
-        <circle cx="16" cy="14" r="13" fill="#eb001b" opacity="0.9" />
-        <circle cx="28" cy="14" r="13" fill="#f79e1b" opacity="0.9" />
-        <path d="M22 5.3a13 13 0 0 1 0 17.4A13 13 0 0 1 22 5.3z" fill="#ff5f00" opacity="0.85" />
-      </svg>
-    );
-  }
-  return (
-    <span className={`font-black tracking-widest text-white/90 ${size === "lg" ? "text-sm" : "text-[10px]"}`}>
-      AMEX
-    </span>
-  );
-};
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 const MyWallet = () => {
-  const [accounts, setAccounts]       = useState([]);
-  const [selectedAcc, setSelectedAcc] = useState(0);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState(null);
+  const [accounts, setAccounts]         = useState([]);
+  const [selectedAcc, setSelectedAcc]   = useState(0);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState(null);
+  const [modalMode, setModalMode]       = useState(null);
+  const [editingId, setEditingId]       = useState(null);
+  const [form, setForm]                 = useState(emptyForm);
+  const [submitting, setSubmitting]     = useState(false);
+  const [formError, setFormError]       = useState(null);
+  const [expiryError, setExpiryError]   = useState(false);
 
-  const [modalMode, setModalMode]   = useState(null);
-  const [editingId, setEditingId]   = useState(null);
-  const [form, setForm]             = useState(emptyForm);
-  const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError]   = useState(null);
-  const [expiryError, setExpiryError] = useState(false);
+  // logged-in user's name — read once on mount
+  const loggedInName = getLoggedInName();
 
   // ── fetch ──────────────────────────────────────────────────────────────────
   const fetchAccounts = async () => {
@@ -134,10 +124,15 @@ const MyWallet = () => {
     .reduce((sum, a) => sum + parseFloat(a.balance || 0), 0)
     .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  // resolve the display name: custom card_name > logged-in name
+  const resolveCardName = (acc) => acc?.card_name?.trim() || loggedInName;
+
   // ── modals ─────────────────────────────────────────────────────────────────
   const openAdd = () => {
-    setForm(emptyForm); setEditingId(null);
-    setFormError(null); setExpiryError(false); setModalMode("add");
+    setForm({ ...emptyForm, card_name: loggedInName });
+    setEditingId(null);
+    setFormError(null); setExpiryError(false);
+    setModalMode("add");
   };
 
   const openEdit = (e, acc) => {
@@ -145,6 +140,7 @@ const MyWallet = () => {
     setForm({
       account_name: acc.account_name,
       account_type: acc.account_type,
+      card_name:    acc.card_name    || loggedInName,
       balance:      acc.balance,
       card_number:  acc.card_number  || "",
       expiry_date:  acc.expiry_date  || "",
@@ -173,13 +169,13 @@ const MyWallet = () => {
       const url    = isEdit ? `${API}/accounts/${editingId}` : `${API}/accounts/`;
       const method = isEdit ? "PUT" : "POST";
 
-      // strip spaces from card number before sending
       const payload = {
         ...form,
         balance:     parseFloat(form.balance) || 0,
         card_number: form.card_number.replace(/\s/g, ""),
+        // save the resolved name so it persists even if token changes
+        card_name:   form.card_name.trim() || loggedInName,
       };
-      // don't send cvv to backend (or send if your API accepts it)
       delete payload.cvv;
 
       const res = await fetch(url, {
@@ -210,8 +206,7 @@ const MyWallet = () => {
 
   // ── form field helpers ─────────────────────────────────────────────────────
   const handleCardNumberChange = (e) => {
-    const fmt = formatCardNumber(e.target.value, form.card_network);
-    setForm({ ...form, card_number: fmt });
+    setForm({ ...form, card_number: formatCardNumber(e.target.value, form.card_network) });
   };
 
   const handleExpiryChange = (e) => {
@@ -221,18 +216,16 @@ const MyWallet = () => {
   };
 
   const handleCvvChange = (e) => {
-    const val = e.target.value.replace(/\D/g, "").slice(0, cvvLength(form.card_network));
-    setForm({ ...form, cvv: val });
+    setForm({ ...form, cvv: e.target.value.replace(/\D/g, "").slice(0, cvvLength(form.card_network)) });
   };
 
   const handleNetworkChange = (network) => {
-    // re-format existing number for new network
     const rawDigits = form.card_number.replace(/\s/g, "");
     setForm({
       ...form,
       card_network: network,
-      card_number: formatCardNumber(rawDigits, network),
-      cvv: form.cvv.slice(0, cvvLength(network)),
+      card_number:  formatCardNumber(rawDigits, network),
+      cvv:          form.cvv.slice(0, cvvLength(network)),
     });
   };
 
@@ -255,7 +248,7 @@ const MyWallet = () => {
             ) : selected ? (
               <div className="relative group/card">
                 <VisualCard
-                  name="Dishan Shanuka"
+                  name={resolveCardName(selected)}
                   number={selected.card_number || ""}
                   exp={selected.expiry_date || "--/--"}
                   network={selected.card_network || "Visa"}
@@ -425,6 +418,23 @@ const MyWallet = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
 
+              {/* Card Holder Name */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Card Holder Name
+                </label>
+                <input
+                  type="text"
+                  placeholder={loggedInName}
+                  value={form.card_name}
+                  onChange={e => setForm({ ...form, card_name: e.target.value })}
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                />
+                <p className="text-[10px] text-slate-400 ml-1">
+                  Leave blank to use your account name ({loggedInName})
+                </p>
+              </div>
+
               {/* Account Name */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Account Name</label>
@@ -575,7 +585,7 @@ const MyWallet = () => {
               <div className="pt-2">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-3">Preview</p>
                 <VisualCard
-                  name="Dishan Shanuka"
+                  name={form.card_name.trim() || loggedInName}
                   number={form.card_number}
                   exp={form.expiry_date || "MM/YY"}
                   network={form.card_network}
@@ -586,7 +596,9 @@ const MyWallet = () => {
                 />
               </div>
 
-              {formError && <p className="text-red-500 text-xs font-bold text-center">{formError}</p>}
+              {formError && (
+                <p className="text-red-500 text-xs font-bold text-center">{formError}</p>
+              )}
 
               <button
                 type="submit" disabled={submitting}
@@ -615,7 +627,6 @@ const VisualCard = ({ name, number, exp, network = "Visa", cardType = "Debit", b
 
   return (
     <div className={`${color} ${compact ? "h-36 rounded-[2rem] p-7" : "h-64 rounded-[3rem] p-10"} text-white flex flex-col justify-between shadow-2xl relative overflow-hidden group transition-all duration-500`}>
-      {/* decorative circle */}
       <div className={`absolute top-0 right-0 ${compact ? "p-8" : "p-10"} opacity-20`}>
         <div className={`${compact ? "w-24 h-24 -mr-12 -mt-12" : "w-32 h-32 -mr-16 -mt-16"} bg-white rounded-full group-hover:scale-110 transition-transform duration-700`} />
       </div>
@@ -626,10 +637,8 @@ const VisualCard = ({ name, number, exp, network = "Visa", cardType = "Debit", b
           <p className={`font-bold text-white/60 uppercase tracking-[0.2em] ${compact ? "text-[8px]" : "text-[10px]"}`}>Balance</p>
           <p className={`font-black tracking-tighter ${compact ? "text-xl" : "text-3xl"}`}>${balance}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-xl">
-            <span className={`font-black uppercase tracking-widest ${compact ? "text-[9px]" : "text-[10px]"}`}>{cardType}</span>
-          </div>
+        <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-xl">
+          <span className={`font-black uppercase tracking-widest ${compact ? "text-[9px]" : "text-[10px]"}`}>{cardType}</span>
         </div>
       </div>
 
