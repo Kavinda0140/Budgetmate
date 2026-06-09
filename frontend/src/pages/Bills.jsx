@@ -69,6 +69,7 @@ useEffect(() => {
   const [manageError, setManageError] = useState('');
   const [addError, setAddError] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   const isValidIconUrl = (url) => {
     const trimmed = (url || '').trim();
@@ -285,32 +286,35 @@ useEffect(() => {
       return;
     }
     setAddError('');
+    setIsAdding(true);
 
     try {
       await API.post('/subscriptions/', {
         ...formData,
         amount: Number(formData.amount),
         due_day: Number(formData.due_day),
-        due_month: formData.due_month,
+        due_month: formData.billing_type === 'Annual' ? Number(formData.due_month) : null,
         icon_url: formData.icon_url?.trim() || DEFAULT_ICON,
         bg_color: formData.bg_color || 'bg-slate-50'
       });
 
-      setShowAddModal(false);
-
+      const response = await API.get('/subscriptions/');
+      setSubscriptions(response.data);
       setFormData({
         name: '',
         amount: '',
         billing_type: 'Monthly',
         due_day: '',
         due_month: today.getMonth(),
-        icon_url: '',
+        icon_url: DEFAULT_ICON,
         bg_color: 'bg-slate-50'
       });
-
-      loadSubscriptions();
+      setShowAddModal(false);
     } catch (error) {
-      console.error(error);
+      console.error('Failed to add subscription:', error);
+      setAddError('Unable to add subscription. Please try again.');
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -602,15 +606,17 @@ useEffect(() => {
                   setAddError('');
                 }}
                 className="flex-1 py-3 bg-slate-100 rounded-xl"
+                disabled={isAdding}
               >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                className="flex-1 py-3 bg-blue-600 text-white rounded-xl"
+                className="flex-1 py-3 bg-blue-600 text-white rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={isAdding}
               >
-                Add
+                {isAdding ? 'Adding...' : 'Add'}
               </button>
             </div>
 
@@ -635,7 +641,7 @@ useEffect(() => {
             </button>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 p-6">
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-2">
               {subscriptions.length === 0 ? (
                 <div className="rounded-3xl bg-slate-50 p-6 text-center text-slate-500">
                   No active subscriptions to manage.
