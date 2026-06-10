@@ -1,7 +1,31 @@
+import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import { Bell, Search, CircleHelp } from 'lucide-react';
+import API from '../services/api';
 
 const DashboardLayout = ({ children, title }) => {
+  const [profilePhoto, setProfilePhoto] = useState(() => localStorage.getItem('profilePhoto') || '');
+
+  useEffect(() => {
+    const loadProfilePhoto = async () => {
+      if (!localStorage.getItem('token')) {
+        setProfilePhoto('');
+        return;
+      }
+
+      try {
+        const { data } = await API.get('/settings/profile');
+        const nextPhoto = data?.profile_photo || '';
+        setProfilePhoto(nextPhoto);
+        localStorage.setItem('profilePhoto', nextPhoto);
+      } catch {
+        setProfilePhoto(localStorage.getItem('profilePhoto') || '');
+      }
+    };
+
+    void loadProfilePhoto();
+  }, []);
+
   return (
     <div className="flex min-h-screen bg-[#F8FAFF] font-sans">
       {/*  Left Sidebar */}
@@ -26,8 +50,12 @@ const DashboardLayout = ({ children, title }) => {
                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             </button>
             <button className="hover:text-blue-600 transition-colors"><CircleHelp size={20} /></button>
-            <div className="h-10 w-10 bg-slate-200 rounded-full overflow-hidden border-2 border-white shadow-sm">
-               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dishan" alt="User" />
+            <div className="h-10 w-10 bg-slate-200 rounded-full overflow-hidden border-2 border-white shadow-sm flex items-center justify-center">
+              {profilePhoto ? (
+                <img src={profilePhoto} alt="User" className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-xs font-black text-slate-500">BM</span>
+              )}
             </div>
           </div>
         </header>

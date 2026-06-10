@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { User, Lock, Bell, Globe, ShieldCheck, CreditCard, ChevronRight, Camera, Loader2 } from 'lucide-react';
+import { User, Lock, Bell, Globe, ShieldCheck, CreditCard, ChevronRight, Camera, Loader2, Eye, EyeOff, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getProfile, updateProfile } from '../services/settingsService';
+import { getProfile, updateProfile, changePassword } from '../services/settingsService';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -13,7 +13,13 @@ const Settings = () => {
   });
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ current_password: '', new_password: '', confirm_password: '' });
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [error, setError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const fileInputRef = useRef(null);
 
   const sections = [
@@ -87,6 +93,50 @@ const Settings = () => {
       setError(err.response?.data?.detail || 'Failed to update profile.');
     } finally {
       setSavingProfile(false);
+    }
+  };
+
+  const openChangePassword = () => {
+    setPasswordError('');
+    setPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
+    setShowCurrentPassword(false);
+    setShowNewPassword(false);
+    setIsPasswordModalOpen(true);
+  };
+
+  const closeChangePassword = () => {
+    setIsPasswordModalOpen(false);
+    setPasswordError('');
+    setPasswordForm({ current_password: '', new_password: '', confirm_password: '' });
+  };
+
+  const handlePasswordSubmit = async (event) => {
+    event.preventDefault();
+
+    if (passwordForm.new_password.length < 6) {
+      setPasswordError('New password must be at least 6 characters long.');
+      return;
+    }
+
+    if (passwordForm.new_password !== passwordForm.confirm_password) {
+      setPasswordError('New passwords do not match.');
+      return;
+    }
+
+    try {
+      setSavingPassword(true);
+      setPasswordError('');
+      await changePassword({
+        current_password: passwordForm.current_password,
+        new_password: passwordForm.new_password,
+      });
+
+      toast.success('Password updated successfully');
+      closeChangePassword();
+    } catch (err) {
+      setPasswordError(err.response?.data?.detail || 'Failed to update password.');
+    } finally {
+      setSavingPassword(false);
     }
   };
 
@@ -209,7 +259,7 @@ const Settings = () => {
               <h4 className="text-lg font-black text-slate-900 mb-8">Security & Privacy</h4>
               <div className="space-y-4">
                 <SecurityItem icon={ShieldCheck} label="Two-Factor Authentication" status="Configure Security" />
-                <SecurityItem icon={Lock} label="Change Password" status="Set a strong password" />
+                <SecurityItem icon={Lock} label="Change Password" status="Set a strong password" onClick={openChangePassword} />
                 <SecurityItem icon={CreditCard} label="Payment Methods" status="Add or remove cards" />
               </div>
             </div>
@@ -225,13 +275,90 @@ const Settings = () => {
 
         </div>
       </div>
+
+      {isPasswordModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 backdrop-blur-sm px-4">
+          <div className="w-full max-w-lg rounded-[2rem] bg-white p-8 shadow-2xl border border-slate-100">
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <div>
+                <h4 className="text-xl font-black text-slate-900">Change Password</h4>
+                <p className="text-sm font-medium text-slate-500">Update your login password for this account.</p>
+              </div>
+              <button type="button" onClick={closeChangePassword} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-900">
+                <X size={18} />
+              </button>
+            </div>
+
+            {passwordError && (
+              <div className="mb-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                {passwordError}
+              </div>
+            )}
+
+            <form onSubmit={handlePasswordSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Current Password</label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    value={passwordForm.current_password}
+                    onChange={(event) => setPasswordForm((prev) => ({ ...prev, current_password: event.target.value }))}
+                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 pr-14 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <button type="button" onClick={() => setShowCurrentPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                    {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">New Password</label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={passwordForm.new_password}
+                    onChange={(event) => setPasswordForm((prev) => ({ ...prev, new_password: event.target.value }))}
+                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 pr-14 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <button type="button" onClick={() => setShowNewPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                    {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={passwordForm.confirm_password}
+                  onChange={(event) => setPasswordForm((prev) => ({ ...prev, confirm_password: event.target.value }))}
+                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button type="button" onClick={closeChangePassword} className="rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-widest text-slate-500 hover:bg-slate-100">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingPassword}
+                  className="rounded-2xl bg-[#0A1128] px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {savingPassword ? 'Saving...' : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
 
 // Security Row Component
-const SecurityItem = ({ icon: Icon, label, status }) => (
-  <div className="flex items-center justify-between p-6 rounded-3xl border border-slate-50 hover:bg-slate-50 transition-all cursor-pointer group">
+const SecurityItem = ({ icon: Icon, label, status, onClick }) => (
+  <button type="button" onClick={onClick} className="flex w-full items-center justify-between rounded-3xl border border-slate-50 p-6 text-left transition-all hover:bg-slate-50 group">
     <div className="flex items-center gap-4">
       <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-blue-600 shadow-sm transition-colors">
         <Icon size={20} />
@@ -242,7 +369,7 @@ const SecurityItem = ({ icon: Icon, label, status }) => (
       </div>
     </div>
     <ChevronRight size={18} className="text-slate-300 group-hover:text-slate-600" />
-  </div>
+  </button>
 );
 
 export default Settings;
