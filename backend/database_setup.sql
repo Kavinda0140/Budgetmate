@@ -151,6 +151,7 @@ IF NOT EXISTS (
 BEGIN
     CREATE TABLE Subscriptions (
         id INT IDENTITY(1,1) PRIMARY KEY,
+        user_id INT NOT NULL,
         name VARCHAR(100) NOT NULL,
         amount DECIMAL(10,2) NOT NULL,
         billing_type VARCHAR(20) NOT NULL,
@@ -158,13 +159,15 @@ BEGIN
         due_month INT NULL,
         icon_url VARCHAR(255) NULL,
         bg_color VARCHAR(50) NULL,
-        created_at DATETIME DEFAULT GETDATE()
+        created_at DATETIME DEFAULT GETDATE(),
+        CONSTRAINT FK_Subscriptions_Users FOREIGN KEY (user_id) REFERENCES Users(id)
     );
 END
 GO
 
 -- 8. Create Get Subscriptions Procedure
 CREATE OR ALTER PROCEDURE get_subscriptions_proc
+    @user_id INT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -180,12 +183,14 @@ BEGIN
         bg_color,
         created_at
     FROM Subscriptions
+    WHERE user_id = @user_id
     ORDER BY due_day;
 END
 GO
 
 -- 9. Create Add Subscription Procedure
 CREATE OR ALTER PROCEDURE add_subscription_proc
+    @user_id INT,
     @name VARCHAR(100),
     @amount DECIMAL(10,2),
     @billing_type VARCHAR(20),
@@ -199,6 +204,7 @@ BEGIN
 
     INSERT INTO Subscriptions
     (
+        user_id,
         name,
         amount,
         billing_type,
@@ -209,6 +215,7 @@ BEGIN
     )
     VALUES
     (
+        @user_id,
         @name,
         @amount,
         @billing_type,
@@ -225,6 +232,7 @@ GO
 -- 10. Create Update Subscription Procedure
 CREATE OR ALTER PROCEDURE update_subscription_proc
     @id INT,
+    @user_id INT,
     @name VARCHAR(100),
     @amount DECIMAL(10,2),
     @billing_type VARCHAR(20),
@@ -245,19 +253,26 @@ BEGIN
         due_month = @due_month,
         icon_url = @icon_url,
         bg_color = @bg_color
-    WHERE id = @id;
+    WHERE id = @id
+      AND user_id = @user_id;
+
+    SELECT @@ROWCOUNT AS rows_affected;
 END
 GO
 
 -- 11. Create Delete Subscription Procedure
 CREATE OR ALTER PROCEDURE delete_subscription_proc
-    @id INT
+    @id INT,
+    @user_id INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DELETE FROM Subscriptions
-    WHERE id = @id;
+    WHERE id = @id
+      AND user_id = @user_id;
+
+    SELECT @@ROWCOUNT AS rows_affected;
 END
 GO
 

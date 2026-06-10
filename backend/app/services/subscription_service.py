@@ -4,14 +4,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# --- 1. Get all subscriptions ---
-def get_subscriptions():
+# --- 1. Get all subscriptions for a user ---
+def get_subscriptions(user_id: int):
     conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        cursor.execute("EXEC get_subscriptions_proc")
+        cursor.execute(
+            "EXEC get_subscriptions_proc ?",
+            (user_id,)
+        )
 
         rows = cursor.fetchall()
         columns = [col[0] for col in cursor.description]
@@ -29,15 +32,16 @@ def get_subscriptions():
 
 
 # --- 2. Add a subscription ---
-def add_subscription(data):
+def add_subscription(user_id: int, data):
     conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute(
-            "EXEC add_subscription_proc ?, ?, ?, ?, ?, ?, ?",
+            "EXEC add_subscription_proc ?, ?, ?, ?, ?, ?, ?, ?",
             (
+                user_id,
                 data.name,
                 data.amount,
                 data.billing_type,
@@ -50,9 +54,8 @@ def add_subscription(data):
 
         row = cursor.fetchone()
         new_id = row[0] if row else None
-
         conn.commit()
-        return new_id
+        return new_id is not None
 
     except Exception as e:
         logger.error(f"[ERROR] add_subscription: {str(e)}")
@@ -64,15 +67,17 @@ def add_subscription(data):
 
 
 # --- 3. Update a subscription ---
-def update_subscription(subscription_id: int, data):
+def update_subscription(subscription_id: int, user_id: int, data):
     conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute(
-            "UPDATE Subscriptions SET name = ?, amount = ?, billing_type = ?, due_day = ?, due_month = ?, icon_url = ?, bg_color = ? WHERE id = ?",
+            "EXEC update_subscription_proc ?, ?, ?, ?, ?, ?, ?, ?, ?",
             (
+                subscription_id,
+                user_id,
                 data.name,
                 data.amount,
                 data.billing_type,
@@ -80,11 +85,15 @@ def update_subscription(subscription_id: int, data):
                 data.due_month,
                 data.icon_url,
                 data.bg_color,
-                subscription_id,
             )
         )
 
-        rows_affected = cursor.rowcount
+        try:
+            row = cursor.fetchone()
+            rows_affected = row[0] if row is not None else cursor.rowcount
+        except Exception:
+            rows_affected = cursor.rowcount
+
         conn.commit()
         return rows_affected > 0, None
 
@@ -98,19 +107,25 @@ def update_subscription(subscription_id: int, data):
 
 
 # --- 4. Delete a subscription ---
-def delete_subscription(subscription_id: int):
+def delete_subscription(subscription_id: int, user_id: int):
     conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute(
-            "EXEC delete_subscription_proc ?",
-            (subscription_id,)
+            "EXEC delete_subscription_proc ?, ?",
+            (subscription_id, user_id)
         )
 
+        try:
+            row = cursor.fetchone()
+            rows_affected = row[0] if row is not None else cursor.rowcount
+        except Exception:
+            rows_affected = cursor.rowcount
+
         conn.commit()
-        return True
+        return rows_affected > 0
 
     except Exception as e:
         logger.error(f"[ERROR] delete_subscription: {str(e)}")
