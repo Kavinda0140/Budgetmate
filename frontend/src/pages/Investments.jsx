@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { TrendingUp, ArrowUpRight, ArrowDownRight, Plus, Briefcase, Globe, PieChart as PieIcon, ChevronRight } from 'lucide-react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { ArrowUpRight, ArrowDownRight, Plus, Briefcase, ChevronRight } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import { Globe, TrendingUp } from 'lucide-react';
 
 const Investments = () => {
   const [timeframe, setTimeframe] = useState('1M');

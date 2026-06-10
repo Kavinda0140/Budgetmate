@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, Sparkles, MoveRight, TrendingUp, ShieldCheck, Globe, User, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, Sparkles, MoveRight, User, LogOut } from 'lucide-react';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
@@ -7,24 +7,13 @@ import VerifyOTP from './VerifyOTP';
 
 const Home = () => {
   // --- States ---
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('token')));
+  const [userName] = useState(() => localStorage.getItem('userName') || "User");
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isForgotOpen, setIsForgotOpen] = useState(false);
   const [isVerifyOpen, setIsVerifyOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-
-  // --- Auth Check (On Mount) ---
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedName = localStorage.getItem('userName');
-    
-    if (token) {
-      setIsLoggedIn(true);
-      setUserName(storedName || "User");
-    }
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');

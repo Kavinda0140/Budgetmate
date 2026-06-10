@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mail, ArrowLeft, X } from "lucide-react";
 import API from '../services/api';
 import toast from 'react-hot-toast';

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import {
   AlertCircle, Lightbulb, Utensils, Home, Car,
-  ShoppingBag, Clapperboard, Plus, MoreVertical, X,
+  ShoppingBag, Clapperboard, Plus, X,
   Loader2, Trash2,
 } from 'lucide-react';
 import axios from 'axios';
@@ -53,7 +53,13 @@ const Expenses = () => {
     }
   };
 
-  useEffect(() => { fetchBudgets(); }, []);
+  useEffect(() => {
+    const initializeBudgets = async () => {
+      await fetchBudgets();
+    };
+
+    void initializeBudgets();
+  }, []);
 
   // ── derived stats ───────────────────────────────────────────────────────────
   const totalLimit     = budgets.reduce((acc, b) => acc + b.monthly_limit, 0);
@@ -190,7 +196,7 @@ const Expenses = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {budgets.map((item) => {
-            const { icon: Icon, color } = getCategoryMeta(item.category);
+            const { icon: Icon } = getCategoryMeta(item.category);
             const percentage = item.monthly_limit > 0
               ? Math.min(Math.round((item.spent / item.monthly_limit) * 100), 125)
               : 0;

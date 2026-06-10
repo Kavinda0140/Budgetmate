@@ -1,4 +1,3 @@
-import React from 'react';
 import Sidebar from '../components/Sidebar';
 import { Bell, Search, CircleHelp } from 'lucide-react';
 

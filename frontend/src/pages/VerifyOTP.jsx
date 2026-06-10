@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Lock, Hash, X, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import API from '../services/api';
 import toast from 'react-hot-toast';

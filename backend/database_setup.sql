@@ -6,10 +6,18 @@ BEGIN
         full_name VARCHAR(100) NOT NULL,
         email VARCHAR(100) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
+        profile_photo NVARCHAR(MAX) NULL,
         otp_code VARCHAR(6) NULL,
         otp_expiry DATETIME NULL,
         created_at DATETIME DEFAULT GETDATE()
     );
+END
+GO
+
+IF COL_LENGTH('Users', 'profile_photo') IS NULL
+BEGIN
+    ALTER TABLE Users
+    ADD profile_photo NVARCHAR(MAX) NULL;
 END
 GO
 

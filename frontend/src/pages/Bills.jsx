@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
-import { CalendarDays, Bell, Sparkles, Plus, ChevronLeft, ChevronRight, List, Info } from 'lucide-react';
+import { CalendarDays, Sparkles, Plus, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import API from '../services/api';
 
 const DEFAULT_ICON = "https://img.icons8.com/fluency/48/subscription.png";
@@ -40,9 +40,13 @@ const Bills = () => {
     }
   };
 
-useEffect(() => {
-  loadSubscriptions();
-}, []);  
+  useEffect(() => {
+    const initializeSubscriptions = async () => {
+      await loadSubscriptions();
+    };
+
+    void initializeSubscriptions();
+  }, []);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showManageModal, setShowManageModal] = useState(false);
@@ -165,16 +169,13 @@ useEffect(() => {
     }
   };
 
-  // Helper: should this sub appear in the currently viewed month?
-  const isVisibleInCurrentMonth = (sub) => {
-    if (sub.billing_type === 'Monthly') return true;
-    if (sub.billing_type === 'Annual') return Number(sub.due_month) === currentMonthIndex;
-    return true;
-  };
-
   // Subs that are actually due this month (used for calendar dots + list view)
   const visibleSubs = useMemo(
-    () => subscriptions.filter(isVisibleInCurrentMonth),
+    () => subscriptions.filter((sub) => {
+      if (sub.billing_type === 'Monthly') return true;
+      if (sub.billing_type === 'Annual') return Number(sub.due_month) === currentMonthIndex;
+      return true;
+    }),
     [subscriptions, currentMonthIndex]
   );
 
@@ -390,7 +391,6 @@ useEffect(() => {
                   <p className="text-center text-slate-400 text-sm py-10">No bills due in {months[currentMonthIndex]}.</p>
                 )}
                 {visibleSubs.map((sub, i) => {
-                  const isdue = selectedDate === Number(sub.due_day);
                   return (
                   <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-white transition-all group">
                     <div className="flex items-center gap-4">

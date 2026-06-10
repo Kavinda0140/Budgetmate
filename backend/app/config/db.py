@@ -36,6 +36,18 @@ def init_db():
     print("[DB] Initializing Database...")
     conn = get_db_connection()
     if conn:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+            IF COL_LENGTH('Users', 'profile_photo') IS NULL
+            BEGIN
+                ALTER TABLE Users ADD profile_photo NVARCHAR(MAX) NULL;
+            END
+            """)
+            conn.commit()
+            cursor.close()
+        except Exception as e:
+            print(f"[DB] Migration warning: {e}")
         print("[DB] Successfully connected to Azure SQL Database!")
         conn.close()
     else:

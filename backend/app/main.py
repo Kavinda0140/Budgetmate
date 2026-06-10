@@ -6,6 +6,7 @@ from app.routes.transaction import router as transaction_router
 from app.routes import auth 
 from app.routes import auth, account , subscription
 from app.routes.budget import router as budget_router
+from app.routes.settings import router as settings_router
 import uvicorn
 
 app = FastAPI(title="BudgetMate API - Professional Mode")
@@ -30,6 +31,7 @@ app.include_router(transaction_router, prefix="/transactions")
 app.include_router(account.router, prefix="/accounts")
 app.include_router(subscription.router, prefix="/subscriptions")
 app.include_router(budget_router, prefix="/budgets")  
+app.include_router(settings_router, prefix="/settings")
 
 @app.on_event("startup")
 async def startup():

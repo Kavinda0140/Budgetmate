@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { Landmark, Wallet, Plus, X, Loader2, Trash2, Pencil, CreditCard } from 'lucide-react';
 
@@ -118,7 +118,13 @@ const MyWallet = () => {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchAccounts(); }, []);
+  useEffect(() => {
+    const initializeAccounts = async () => {
+      await fetchAccounts();
+    };
+
+    void initializeAccounts();
+  }, []);
 
   const netWorth = accounts
     .reduce((sum, a) => sum + parseFloat(a.balance || 0), 0)

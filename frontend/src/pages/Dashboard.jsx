@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { ArrowUpRight, ArrowDownRight, Plus, Landmark, Target, Wallet } from 'lucide-react';
 import { getTransactions, createTransaction, getUserAccounts } from '../services/transactionService.js';
@@ -35,7 +35,11 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboardData();
+    const initializeDashboard = async () => {
+      await fetchDashboardData();
+    };
+
+    void initializeDashboard();
   }, []);
 
   // Form submit handler for adding new transaction
