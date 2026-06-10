@@ -81,6 +81,7 @@ const Settings = () => {
       }));
 
       localStorage.setItem('userName', updated.full_name || profile.full_name);
+      localStorage.setItem('profilePhoto', updated.profile_photo || profile.profile_photo || '');
       toast.success('Profile updated successfully');
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to update profile.');

@@ -1,24 +1,49 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Sparkles, MoveRight, User, LogOut } from 'lucide-react';
 import Login from './Login';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import VerifyOTP from './VerifyOTP';
+import API from '../services/api';
 
 const Home = () => {
   // --- States ---
   const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(localStorage.getItem('token')));
   const [userName] = useState(() => localStorage.getItem('userName') || "User");
+  const [profilePhoto, setProfilePhoto] = useState(() => localStorage.getItem('profilePhoto') || '');
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isForgotOpen, setIsForgotOpen] = useState(false);
   const [isVerifyOpen, setIsVerifyOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
 
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!localStorage.getItem('token')) return;
+
+      try {
+        const { data } = await API.get('/settings/profile');
+        if (data?.full_name) {
+          localStorage.setItem('userName', data.full_name);
+        }
+        if (data?.profile_photo) {
+          localStorage.setItem('profilePhoto', data.profile_photo);
+          setProfilePhoto(data.profile_photo);
+        }
+      } catch {
+        setProfilePhoto(localStorage.getItem('profilePhoto') || '');
+      }
+    };
+
+    void loadProfile();
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
+    localStorage.removeItem('profilePhoto');
     setIsLoggedIn(false);
+    setProfilePhoto('');
     window.location.reload(); 
   };
 
@@ -85,9 +110,13 @@ const Home = () => {
                 <button 
                   title="Dashboard"
                   onClick={() => window.location.href='/dashboard'}
-                  className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-all shadow-md active:scale-90 cursor-pointer"
+                  className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-all shadow-md active:scale-90 cursor-pointer overflow-hidden"
                 >
-                  <User size={18} />
+                  {profilePhoto ? (
+                    <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={18} />
+                  )}
                 </button>
 
                 <button 
