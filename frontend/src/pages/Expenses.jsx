@@ -87,7 +87,7 @@ const Expenses = () => {
       setIsModalOpen(false);
       setNewCategory('');
       setNewLimit('');
-      fetchBudgets(); // refresh list
+      await fetchBudgets(); // refresh list
     } catch (err) {
       setError('Failed to save budget. Please try again.');
       console.error(err);
@@ -100,7 +100,7 @@ const Expenses = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${API}/budgets/${id}`, { headers: authHeaders() });
-      fetchBudgets();
+      await fetchBudgets();
     } catch (err) {
       console.error('Failed to delete budget:', err);
     }
