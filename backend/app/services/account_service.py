@@ -8,18 +8,17 @@ logger = logging.getLogger(__name__)
 # --- 1. Get all accounts for a user ---
 def get_user_accounts(user_id: int):
     conn = None
+    cursor = None
+    result_cursor = None
     try:
         conn = get_db_connection()
+        if not conn:
+            return []
+
         cursor = conn.cursor()
-        result = cursor.var(oracledb.DB_TYPE_CURSOR)
-
-        cursor.callproc("get_user_accounts_proc", [user_id, result])
-
-        result_cursor = result.getvalue()
-        try:
-            rows = result_cursor.fetchall()
-        finally:
-            result_cursor.close()
+        result_cursor = conn.cursor()
+        cursor.callproc("get_user_accounts_proc", [user_id, result_cursor])
+        rows = result_cursor.fetchall()
 
         return [
             {
@@ -39,8 +38,11 @@ def get_user_accounts(user_id: int):
         logger.error(f"[ERROR] get_user_accounts: {str(e)}")
         return []
     finally:
+        if result_cursor:
+            result_cursor.close()
         if conn:
-            cursor.close()
+            if cursor:
+                cursor.close()
             conn.close()
 
 
