@@ -1,6 +1,6 @@
 # BudgetMate Backend
 
-This is the Python (FastAPI) backend for the BudgetMate expense tracking system. It provides RESTful APIs, handles authentication with JWT, and connects to an Azure SQL Database.
+This is the Python (FastAPI) backend for the BudgetMate expense tracking system. It provides RESTful APIs, handles authentication with JWT, and connects to an Oracle Cloud Autonomous Database.
 
 ## Setup Instructions for Teammates
 
@@ -17,10 +17,10 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-### 2. Install ODBC Driver
-This project uses `pyodbc` to connect to Azure SQL Database. You need the **ODBC Driver 17 for SQL Server** installed on your machine.
-- Download it from: [Microsoft ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server)
-- Most Windows machines with SQL Server tools already have this installed.
+### 2. Configure Oracle Database Wallet
+This project connects to an Oracle Cloud Autonomous Database using the `oracledb` package in Thin mode.
+1. Download the Database Connection Credentials (Wallet zip file) from the Oracle Cloud Console.
+2. Extract the wallet files into the `backend/wallet/` directory (or configure `WALLET_LOCATION` in your `.env` to point to the directory containing `cwallet.sso`, `tnsnames.ora`, etc.).
 
 ### 3. Set up Environment Variables
 Because passwords are ignored by Git, you need to create your own local `.env` file:
@@ -28,10 +28,9 @@ Because passwords are ignored by Git, you need to create your own local `.env` f
 2. Open the new `.env` file and fill in your actual database credentials, JWT secret, and email configurations (ask the team lead if unsure).
 
 ### 4. Set up the Database
-If the Azure SQL Database tables and stored procedures have not been created yet, run the setup script:
-1. Open `database_setup.sql` in **Microsoft SQL Server Management Studio (SSMS)**.
-2. Connect to the Azure SQL Server (`budgetmate-db-server-bhashitha.database.windows.net`).
-3. Execute the script against the `BudgetMate` database.
+If the Oracle Database tables, constraints, sequences, and stored procedures have not been created yet, run the setup scripts using your Oracle Database client/IDE (e.g., Oracle SQL Developer, PL/SQL Developer, or SQLcl):
+1. Execute the main schema script `2026-06-11.sql` to drop any old tables, create the tables, views, sequences, and insert seed data.
+2. Execute the `add_missing_oracle_procedures.sql` script to create the stored procedures and triggers required by the backend.
 
 ### 5. Run the Server
 Start the development server using the main module:
