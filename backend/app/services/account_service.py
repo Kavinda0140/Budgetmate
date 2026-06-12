@@ -1,5 +1,4 @@
 from app.config.db import get_db_connection
-import oracledb
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,18 +7,17 @@ logger = logging.getLogger(__name__)
 # --- 1. Get all accounts for a user ---
 def get_user_accounts(user_id: int):
     conn = None
+    cursor = None
+    result_cursor = None
     try:
         conn = get_db_connection()
+        if not conn:
+            return []
+
         cursor = conn.cursor()
-        result = cursor.var(oracledb.DB_TYPE_CURSOR)
-
-        cursor.callproc("get_user_accounts_proc", [user_id, result])
-
-        result_cursor = result.getvalue()
-        try:
-            rows = result_cursor.fetchall()
-        finally:
-            result_cursor.close()
+        result_cursor = conn.cursor()
+        cursor.callproc("get_user_accounts_proc", [user_id, result_cursor])
+        rows = result_cursor.fetchall()
 
         return [
             {
@@ -39,16 +37,23 @@ def get_user_accounts(user_id: int):
         logger.error(f"[ERROR] get_user_accounts: {str(e)}")
         return []
     finally:
+        if result_cursor:
+            result_cursor.close()
         if conn:
-            cursor.close()
+            if cursor:
+                cursor.close()
             conn.close()
 
 
 # --- 2. Add a new account ---
 def add_account(user_id: int, data):
     conn = None
+    cursor = None
     try:
         conn = get_db_connection()
+        if not conn:
+            return None
+
         cursor = conn.cursor()
         new_id = cursor.var(int)
 
@@ -74,15 +79,20 @@ def add_account(user_id: int, data):
         return None
     finally:
         if conn:
-            cursor.close()
+            if cursor:
+                cursor.close()
             conn.close()
 
 
 # --- 3. Delete an account (only if it belongs to this user) ---
 def delete_account(account_id: int, user_id: int):
     conn = None
+    cursor = None
     try:
         conn = get_db_connection()
+        if not conn:
+            return False
+
         cursor = conn.cursor()
         rows_affected = cursor.var(int)
 
@@ -98,15 +108,20 @@ def delete_account(account_id: int, user_id: int):
         return False
     finally:
         if conn:
-            cursor.close()
+            if cursor:
+                cursor.close()
             conn.close()
 
 
 # --- 4. Update an account (only if it belongs to this user) ---
 def update_account(account_id: int, user_id: int, data):
     conn = None
+    cursor = None
     try:
         conn = get_db_connection()
+        if not conn:
+            return False
+
         cursor = conn.cursor()
         rows_affected = cursor.var(int)
 
@@ -134,5 +149,6 @@ def update_account(account_id: int, user_id: int, data):
         return False
     finally:
         if conn:
-            cursor.close()
+            if cursor:
+                cursor.close()
             conn.close()

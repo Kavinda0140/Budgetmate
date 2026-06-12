@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { Landmark, Wallet, Plus, X, Loader2, Trash2, Pencil, CreditCard } from 'lucide-react';
+import { getUserAccounts } from '../services/transactionService';
 
 const API = "http://localhost:8000";
 
@@ -112,6 +113,7 @@ const MyWallet = () => {
       const res = await fetch(`${API}/accounts/`, { headers: authHeaders() });
       if (!res.ok) throw new Error("Failed to load accounts");
       const data = await res.json();
+      console.log("test");
       setAccounts(data);
       setSelectedAcc(0);
     } catch (e) { setError(e.message); }
