@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+oracledb
+python-dotenv
+bcrypt
+python-jose[cryptography]
+pydantic
+reportlab
