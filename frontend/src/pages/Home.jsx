@@ -715,9 +715,9 @@ const Home = () => {
 
           <StaggerParent className="grid grid-cols-1 md:grid-cols-3 gap-8" stagger={130}>
             {[
-              { init: 'AH', color: 'blue', name: 'Alexander Hayes', role: 'Independent Developer', quote: '"BudgetMate completely reformed how I plan my monthly expenses. The recurring bill notifications are incredibly reliable, preventing me from getting surprised by late fees."' },
-              { init: 'SR', color: 'indigo', name: 'Sarah Reynolds', role: 'Marketing Analyst', quote: '"I was skeptical about AI budgeting, but this tool identified two subscription services I hadn\'t used in 6 months. Saved $40/month on my first day!"' },
-              { init: 'MK', color: 'slate', name: 'Marcus Kaelen', role: 'Small Business Owner', quote: '"Being able to track checking, physical cash, and stock portfolios in a single currency overview has saved me hours of calculation every week."' },
+              { init: 'AH', color: 'blue', name: 'Alexander Hayes', role: 'Independent Developer', quote: '"BudgetMate මගේ මාසික වියදම් සැලසුම් කරන ආකාරය සම්පූර්ණයෙන්ම වෙනස් කළා. නැවත නැවත පැමිණෙන බිල්පත් පිළිබඳ දැනුම්දීම් ඉතාමත් විශ්වාසවන්තයි, එමඟින් ප්‍රමාද ගාස්තු ගෙවීමට සිදුවීමෙන් මාව බේරාගන්නවා."' },
+              { init: 'SR', color: 'indigo', name: 'Sarah Reynolds', role: 'Marketing Analyst', quote: '"මම AI අයවැයකරණය ගැන මුලින් සැක පළ කළත්, මාස 6ක් තිස්සේ මම භාවිතා නොකරපු සබ්ස්ක්‍රිප්ෂන් සේවා දෙකක් හඳුනාගන්න මේ මෙවලම සමත් වුණා. මගේ පළමු දවසෙම මට මසකට ඩොලර් 40ක් ඉතිරි කරගන්න පුළුවන් වුණා!"' },
+              { init: 'MK', color: 'slate', name: 'Marcus Kaelen', role: 'Small Business Owner', quote: '"එකම මුදල් ඒකක දළ විශ්ලේෂණයක් යටතේ බැංකු ගිණුම්, අතේ ඇති මුදල් සහ කොටස් වෙළඳපල ආයෝජන සියල්ල නිරීක්ෂණය කිරීමට හැකිවීම මඟින් සෑම සතියකම මගේ ගණනය කිරීම් සඳහා වැයවන කාලය පැය ගණනාවකින් ඉතිරි කර දෙනවා."' },
             ].map(({ init, color, name, role, quote }, i) => (
               <div key={i} className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100 text-left space-y-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default">
                 <div className="flex gap-1 text-amber-400">
