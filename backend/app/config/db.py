@@ -20,6 +20,11 @@ def get_pool():
             db_password = os.getenv("DB_PASSWORD")
             db_dsn = os.getenv("DB_DSN")
             wallet_location = os.getenv("WALLET_LOCATION")
+            if wallet_location:
+                wallet_path = Path(wallet_location)
+                if not wallet_path.is_absolute():
+                    wallet_path = base_dir / wallet_path
+                wallet_location = str(wallet_path)
 
             pool = oracledb.create_pool(
                 user=db_user,
