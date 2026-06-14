@@ -32,13 +32,20 @@ function getCategoryMeta(name) {
 // ── component ─────────────────────────────────────────────────────────────────
 
 const Expenses = () => {
-  const [budgets, setBudgets]           = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [isModalOpen, setIsModalOpen]   = useState(false);
-  const [submitting, setSubmitting]     = useState(false);
-  const [newCategory, setNewCategory]   = useState('');
-  const [newLimit, setNewLimit]         = useState('');
-  const [error, setError]               = useState('');
+  const [budgets, setBudgets]                 = useState([]);
+  const [loading, setLoading]                 = useState(true);
+  const [isModalOpen, setIsModalOpen]         = useState(false);
+  const [submitting, setSubmitting]           = useState(false);
+  const [newCategory, setNewCategory]         = useState('');
+  const [newLimit, setNewLimit]               = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [transactionTitle, setTransactionTitle] = useState('');
+  const [transactionAmount, setTransactionAmount] = useState('');
+  const [transactionAccountId, setTransactionAccountId] = useState('');
+  const [transactionSubmitting, setTransactionSubmitting] = useState(false);
+  const [transactionError, setTransactionError] = useState('');
+  const [accounts, setAccounts]               = useState([]);
+  const [error, setError]                     = useState('');
 
   // ── fetch budgets from backend ──────────────────────────────────────────────
   const fetchBudgets = async () => {
@@ -53,12 +60,22 @@ const Expenses = () => {
     }
   };
 
+  const fetchAccounts = async () => {
+    try {
+      const res = await axios.get(`${API}/accounts/`, { headers: authHeaders() });
+      setAccounts(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch accounts:', err);
+      setAccounts([]);
+    }
+  };
+
   useEffect(() => {
-    const initializeBudgets = async () => {
-      await fetchBudgets();
+    const initializeData = async () => {
+      await Promise.all([fetchBudgets(), fetchAccounts()]);
     };
 
-    void initializeBudgets();
+    void initializeData();
   }, []);
 
   // ── derived stats ───────────────────────────────────────────────────────────
@@ -79,11 +96,8 @@ const Expenses = () => {
     setError('');
     setSubmitting(true);
     try {
-      await axios.post(
-        `${API}/budgets/`,
-        { category: newCategory.trim(), monthly_limit: parseFloat(newLimit) },
-        { headers: authHeaders() }
-      );
+      const payload = { category: newCategory.trim(), monthly_limit: parseFloat(newLimit) };
+      await axios.post(`${API}/budgets/`, payload, { headers: authHeaders() });
       setIsModalOpen(false);
       setNewCategory('');
       setNewLimit('');
@@ -93,6 +107,69 @@ const Expenses = () => {
       console.error(err);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // ── category expense modal and submit logic ─────────────────────────────────
+  const openCategoryModal = (item) => {
+    setSelectedCategory(item);
+    setTransactionTitle('');
+    setTransactionAmount('');
+    setTransactionAccountId('');
+    setTransactionError('');
+  };
+
+  const closeCategoryModal = () => {
+    setSelectedCategory(null);
+    setTransactionError('');
+  };
+
+  const handlePayExpense = async () => {
+    if (!transactionTitle.trim() || !transactionAmount || !transactionAccountId) {
+      setTransactionError('Please enter an expense name, amount, and select an account.');
+      return;
+    }
+
+    const amount = parseFloat(transactionAmount);
+    if (Number.isNaN(amount) || amount <= 0) {
+      setTransactionError('Please enter a valid amount greater than zero.');
+      return;
+    }
+
+    setTransactionError('');
+    setTransactionSubmitting(true);
+
+    try {
+      await axios.post(
+        `${API}/transactions/`,
+        {
+          account_id: parseInt(transactionAccountId, 10),
+          title: transactionTitle.trim(),
+          category: selectedCategory.category,
+          amount,
+          transaction_type: 'EXPENSE',
+        },
+        { headers: authHeaders() }
+      );
+
+      setBudgets((prevBudgets) => prevBudgets.map((b) => {
+        if (b.id === selectedCategory.id) {
+          return { ...b, spent: parseFloat(b.spent || 0) + amount };
+        }
+        return b;
+      }));
+
+      if (selectedCategory) {
+        setSelectedCategory({ ...selectedCategory, spent: parseFloat(selectedCategory.spent || 0) + amount });
+      }
+
+      closeCategoryModal();
+      await Promise.all([fetchBudgets(), fetchAccounts()]);
+    } catch (err) {
+      setTransactionError('Failed to record expense. Please try again.');
+      console.error(err);
+    } finally {
+      setTransactionSubmitting(false);
     }
   };
 
@@ -107,8 +184,17 @@ const Expenses = () => {
   };
 
   // ── render ──────────────────────────────────────────────────────────────────
+  const notifications = overspentCategory ? [
+    {
+      id: overspentCategory.id,
+      title: 'Overspending Alert',
+      category: overspentCategory.category,
+      message: `Your ${overspentCategory.category} budget has exceeded the limit by $${(overspentCategory.spent - overspentCategory.monthly_limit).toFixed(2)}.`,
+    },
+  ] : [];
+
   return (
-    <DashboardLayout title="Budget Management">
+    <DashboardLayout title="Budget Management" notifications={notifications}>
 
       {/* ── Alert Banner ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
@@ -173,18 +259,7 @@ const Expenses = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-xl transition-all group">
-          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-            <Plus size={28} />
-          </div>
-          <h4 className="font-black text-slate-900 mb-2">Auto-Budget</h4>
-          <p className="text-[11px] text-slate-400 font-medium leading-relaxed mb-6 px-4">
-            Let BudgetMate AI optimize your limits based on last month's data.
-          </p>
-          <button className="w-full py-4 bg-[#0A1128] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:opacity-90 transition-all">
-            Optimize Now
-          </button>
-        </div>
+        
       </div>
 
       {/* ── Category Cards ── */}
@@ -205,7 +280,8 @@ const Expenses = () => {
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm group hover:border-blue-200 transition-all relative overflow-hidden"
+                onClick={() => openCategoryModal(item)}
+                className={`rounded-[2.5rem] p-8 border transition-all relative overflow-hidden cursor-pointer ${isOver ? 'bg-red-50 border-red-300 shadow-red-100' : 'bg-white border-slate-100 shadow-sm hover:border-blue-200'}`}
               >
                 {isOver && (
                   <span className="absolute top-6 right-6 bg-red-500 text-white text-[8px] font-black px-2 py-1 rounded-lg uppercase animate-bounce">
@@ -218,7 +294,7 @@ const Expenses = () => {
                     <Icon size={20} />
                   </div>
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
                     className="text-slate-300 hover:text-red-500 transition-colors"
                     title="Remove category"
                   >
@@ -319,6 +395,87 @@ const Expenses = () => {
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 {submitting ? 'Saving…' : 'Create Category'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedCategory && (
+        <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
+            <button
+              onClick={closeCategoryModal}
+              className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"
+            >
+              <X size={24} />
+            </button>
+
+            <h3 className="text-2xl font-black text-slate-900 mb-2">{selectedCategory.category}</h3>
+            <p className="text-sm text-slate-400 font-medium mb-8">
+              Record an expense for this category.
+            </p>
+
+            {transactionError && (
+              <p className="text-xs text-red-600 font-bold mb-4 bg-red-50 px-4 py-2 rounded-xl">
+                {transactionError}
+              </p>
+            )}
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Expense Description
+                </label>
+                <input
+                  type="text"
+                  value={transactionTitle}
+                  onChange={e => setTransactionTitle(e.target.value)}
+                  placeholder="e.g. Grocery shopping"
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Select Account
+                </label>
+                <select
+                  value={transactionAccountId}
+                  onChange={e => setTransactionAccountId(e.target.value)}
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                >
+                  <option value="">-- Choose account --</option>
+                  {accounts.map((account) => (
+                    <option key={account.id} value={account.id}>
+                      {account.account_name} — ${parseFloat(account.balance).toFixed(2)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Expense Amount ($)
+                </label>
+                <input
+                  type="number"
+                  value={transactionAmount}
+                  onChange={e => setTransactionAmount(e.target.value)}
+                  placeholder="100"
+                  min="0"
+                  step="0.01"
+                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                />
+              </div>
+
+              <button
+                onClick={handlePayExpense}
+                disabled={transactionSubmitting}
+                className="w-full py-5 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-95 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {transactionSubmitting && <Loader2 size={16} className="animate-spin" />}
+                {transactionSubmitting ? 'Processing…' : 'Pay'}
               </button>
             </div>
           </div>
