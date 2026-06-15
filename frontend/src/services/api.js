@@ -1,8 +1,14 @@
 import axios from 'axios';
 
+const normalizeBaseUrl = (url) => url.replace(/\/+$/, '');
+
+const API_BASE_URL = normalizeBaseUrl(
+    import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '/api')
+);
+
 // Create Axios instance
 const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -53,4 +59,5 @@ API.interceptors.response.use(
     }
 );
 
+export { API_BASE_URL };
 export default API;

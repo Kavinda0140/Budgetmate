@@ -5,16 +5,9 @@ import {
   ShoppingBag, Clapperboard, Plus, X,
   Loader2, Trash2,
 } from 'lucide-react';
-import axios from 'axios';
+import API from '../services/api';
 
 // --- helpers ------------------------------------------------------------------
-
-const API = 'http://localhost:8000';
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}` };
-}
 
 // Map a category name to a Lucide icon + colour (falls back gracefully)
 const CATEGORY_META = {
@@ -51,7 +44,7 @@ const Expenses = () => {
   const fetchBudgets = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API}/budgets/`, { headers: authHeaders() });
+      const res = await API.get('/budgets/');
       setBudgets(res.data);
     } catch (err) {
       console.error('Failed to fetch budgets:', err);
@@ -62,7 +55,7 @@ const Expenses = () => {
 
   const fetchAccounts = async () => {
     try {
-      const res = await axios.get(`${API}/accounts/`, { headers: authHeaders() });
+      const res = await API.get('/accounts/');
       setAccounts(res.data || []);
     } catch (err) {
       console.error('Failed to fetch accounts:', err);
@@ -97,7 +90,7 @@ const Expenses = () => {
     setSubmitting(true);
     try {
       const payload = { category: newCategory.trim(), monthly_limit: parseFloat(newLimit) };
-      await axios.post(`${API}/budgets/`, payload, { headers: authHeaders() });
+      await API.post('/budgets/', payload);
       setIsModalOpen(false);
       setNewCategory('');
       setNewLimit('');
@@ -140,16 +133,15 @@ const Expenses = () => {
     setTransactionSubmitting(true);
 
     try {
-      await axios.post(
-        `${API}/transactions/`,
+      await API.post(
+        '/transactions/',
         {
           account_id: parseInt(transactionAccountId, 10),
           title: transactionTitle.trim(),
           category: selectedCategory.category,
           amount,
           transaction_type: 'EXPENSE',
-        },
-        { headers: authHeaders() }
+        }
       );
 
       setBudgets((prevBudgets) => prevBudgets.map((b) => {
@@ -176,7 +168,7 @@ const Expenses = () => {
   // --- delete budget ----------------------------------------------------------
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${API}/budgets/${id}`, { headers: authHeaders() });
+      await API.delete(`/budgets/${id}`);
       await fetchBudgets();
     } catch (err) {
       console.error('Failed to delete budget:', err);
