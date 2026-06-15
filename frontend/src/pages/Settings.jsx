@@ -8,12 +8,14 @@ import { getProfile, updateProfile, changePassword } from '../services/settingsS
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const { darkMode, toggleDarkMode } = useTheme();
-  const [profile, setProfile] = useState({
-    full_name: '',
-    email: '',
-    profile_photo: '',
+  const [profile, setProfile] = useState(() => ({
+    full_name: localStorage.getItem('userName') || '',
+    email: localStorage.getItem('userEmail') || '',
+    profile_photo: localStorage.getItem('profilePhoto') || '',
+  }));
+  const [loadingProfile, setLoadingProfile] = useState(() => {
+    return !localStorage.getItem('userName');
   });
-  const [loadingProfile, setLoadingProfile] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ current_password: '', new_password: '', confirm_password: '' });
@@ -42,8 +44,13 @@ const Settings = () => {
           email: data.email || '',
           profile_photo: data.profile_photo || '',
         });
+        localStorage.setItem('userName', data.full_name || '');
+        localStorage.setItem('userEmail', data.email || '');
+        localStorage.setItem('profilePhoto', data.profile_photo || '');
       } catch (err) {
-        setError(err.response?.data?.detail || 'Failed to load profile details.');
+        if (!profile.full_name) {
+          setError(err.response?.data?.detail || 'Failed to load profile details.');
+        }
       } finally {
         setLoadingProfile(false);
       }
@@ -154,8 +161,8 @@ const Settings = () => {
               onClick={() => setActiveTab(section.id)} 
               className={`w-full flex items-center gap-4 px-6 py-4 rounded-[1.5rem] text-sm font-bold transition-all cursor-pointer ${
                 activeTab === section.id 
-                ? 'bg-blue-600 text-white shadow-xl shadow-blue-100' 
-                : 'text-slate-500 hover:bg-white hover:text-slate-900 border border-transparent hover:border-slate-100'
+                ? 'bg-blue-600 text-white shadow-xl shadow-blue-100 dark:shadow-none' 
+                : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white border border-transparent hover:border-slate-100 dark:hover:border-slate-800'
               }`}
             >
               <section.icon size={18} />
@@ -170,14 +177,14 @@ const Settings = () => {
           {activeTab === 'profile' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {/* Profile Header */}
-              <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="relative group">
-                    <div className="w-32 h-32 bg-slate-100 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-xl">
+                    <div className="w-32 h-32 bg-slate-100 dark:bg-slate-850 rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-xl">
                       {profile.profile_photo ? (
                         <img src={profile.profile_photo} alt="Profile preview" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400">
+                        <div className="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-400">
                           <User size={48} />
                         </div>
                       )}
@@ -185,7 +192,7 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={handlePhotoClick}
-                      className="absolute bottom-0 right-0 p-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-110 transition-all border-4 border-white"
+                      className="absolute bottom-0 right-0 p-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:scale-110 transition-all border-4 border-white dark:border-slate-800"
                     >
                       <Camera size={18} />
                     </button>
@@ -198,7 +205,7 @@ const Settings = () => {
                     />
                   </div>
                   <div className="text-center md:text-left">
-                    <h3 className="text-2xl font-black text-slate-900">
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white">
                       {profile.full_name || 'Your Name'}
                     </h3>
                     <p className="text-slate-400 font-bold text-sm">Update your personal details below</p>
@@ -207,16 +214,23 @@ const Settings = () => {
               </div>
 
               {/* Personal Info Form */}
-              <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
-                <h4 className="text-lg font-black text-slate-900 mb-8">Personal Information</h4>
+              <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
+                <div className="flex items-center gap-3 mb-8">
+                  <h4 className="text-lg font-black text-slate-900 dark:text-white">Personal Information</h4>
+                  {loadingProfile && (
+                    <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 font-bold">
+                      <Loader2 size={12} className="animate-spin text-blue-600" /> Syncing...
+                    </span>
+                  )}
+                </div>
 
                 {error && (
-                  <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                  <div className="mb-6 rounded-2xl border border-red-100 dark:border-red-900/35 bg-red-50 dark:bg-red-950/10 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
                     {error}
                   </div>
                 )}
 
-                {loadingProfile ? (
+                {loadingProfile && !profile.full_name ? (
                   <div className="flex items-center gap-3 py-6 text-slate-400 font-medium">
                     <Loader2 size={18} className="animate-spin" />
                     Loading profile...
@@ -230,7 +244,7 @@ const Settings = () => {
                         value={profile.full_name}
                         onChange={(event) => setProfile((prev) => ({ ...prev, full_name: event.target.value }))}
                         placeholder="Enter your full name"
-                        className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                        className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none"
                       />
                     </div>
                     <div className="space-y-2">
@@ -239,7 +253,7 @@ const Settings = () => {
                         type="email"
                         value={profile.email}
                         readOnly
-                        className="w-full px-6 py-4 bg-slate-100 border border-slate-100 rounded-2xl text-sm font-bold text-slate-500 focus:outline-none"
+                        className="w-full px-6 py-4 bg-slate-100 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-805 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -248,7 +262,7 @@ const Settings = () => {
                 <button
                   type="submit"
                   disabled={savingProfile || loadingProfile}
-                  className="mt-10 px-10 py-4 bg-[#0A1128] text-white rounded-2xl text-xs font-black tracking-widest uppercase hover:opacity-90 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="mt-10 px-10 py-4 bg-[#0A1128] dark:bg-blue-600 text-white rounded-2xl text-xs font-black tracking-widest uppercase hover:opacity-90 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {savingProfile ? 'Saving...' : 'Update Profile'}
                 </button>
@@ -257,8 +271,8 @@ const Settings = () => {
           )}
 
           {activeTab === 'security' && (
-            <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <h4 className="text-lg font-black text-slate-900 mb-8">Security & Privacy</h4>
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <h4 className="text-lg font-black text-slate-900 dark:text-white mb-8">Security & Privacy</h4>
               <div className="space-y-4">
                 <SecurityItem icon={ShieldCheck} label="Two-Factor Authentication" status="Configure Security" />
                 <SecurityItem icon={Lock} label="Change Password" status="Set a strong password" onClick={openChangePassword} />
@@ -269,25 +283,25 @@ const Settings = () => {
 
           {/*  Notifications Content */}
           {activeTab === 'notifications' && (
-            <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm animate-in fade-in duration-300">
-               <h4 className="text-lg font-black text-slate-900 mb-4">Notifications</h4>
-               <p className="text-slate-500 text-sm font-medium">Manage how and when you receive alerts from BudgetMate.</p>
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none animate-in fade-in duration-300">
+               <h4 className="text-lg font-black text-slate-900 dark:text-white mb-4">Notifications</h4>
+               <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Manage how and when you receive alerts from BudgetMate.</p>
             </div>
           )}
   
           {activeTab === 'preferences' && (
-            <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm animate-in fade-in duration-300">
-              <h4 className="text-lg font-black text-slate-900 mb-2">Preferences</h4>
-              <p className="text-slate-500 text-sm font-medium mb-8">Customize your BudgetMate experience.</p>
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none animate-in fade-in duration-300">
+              <h4 className="text-lg font-black text-slate-900 dark:text-white mb-2">Preferences</h4>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-8">Customize your BudgetMate experience.</p>
 
-              <div className="flex items-center justify-between p-6 rounded-3xl border border-slate-100 bg-slate-50">
+              <div className="flex items-center justify-between p-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-2xl">
+                  <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center shadow-sm text-2xl">
                     {darkMode ? '🌙' : '☀️'}
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900">Dark Mode</p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5 text-slate-400">
+                    <p className="font-bold text-slate-900 dark:text-white">Dark Mode</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5 text-slate-400 dark:text-slate-500">
                       {darkMode ? 'Dark theme is ON' : 'Light theme is ON'}
                     </p>
                   </div>
@@ -295,7 +309,7 @@ const Settings = () => {
 
                 <button
                   onClick={toggleDarkMode}
-                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none ${
+                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none cursor-pointer ${
                     darkMode ? 'bg-blue-600' : 'bg-slate-300'
                   }`}
                 >
@@ -313,20 +327,20 @@ const Settings = () => {
       </div>
 
       {isPasswordModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 backdrop-blur-sm px-4">
-          <div className="w-full max-w-lg rounded-[2rem] bg-white p-8 shadow-2xl border border-slate-100">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 backdrop-blur-sm px-4 animate-in fade-in duration-300">
+          <div className="w-full max-w-lg rounded-[2rem] bg-white dark:bg-slate-900 p-8 shadow-2xl border border-slate-100 dark:border-slate-800">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
-                <h4 className="text-xl font-black text-slate-900">Change Password</h4>
-                <p className="text-sm font-medium text-slate-500">Update your login password for this account.</p>
+                <h4 className="text-xl font-black text-slate-900 dark:text-white">Change Password</h4>
+                <p className="text-sm font-medium text-slate-505 dark:text-slate-400">Update your login password for this account.</p>
               </div>
-              <button type="button" onClick={closeChangePassword} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-900">
+              <button type="button" onClick={closeChangePassword} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white cursor-pointer">
                 <X size={18} />
               </button>
             </div>
 
             {passwordError && (
-              <div className="mb-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              <div className="mb-5 rounded-2xl border border-red-100 dark:border-red-900/35 bg-red-50 dark:bg-red-950/10 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">
                 {passwordError}
               </div>
             )}
@@ -339,9 +353,9 @@ const Settings = () => {
                     type={showCurrentPassword ? 'text' : 'password'}
                     value={passwordForm.current_password}
                     onChange={(event) => setPasswordForm((prev) => ({ ...prev, current_password: event.target.value }))}
-                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 pr-14 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-6 py-4 pr-14 text-sm font-bold text-slate-900 dark:text-white focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                   />
-                  <button type="button" onClick={() => setShowCurrentPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                  <button type="button" onClick={() => setShowCurrentPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer">
                     {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
@@ -354,9 +368,9 @@ const Settings = () => {
                     type={showNewPassword ? 'text' : 'password'}
                     value={passwordForm.new_password}
                     onChange={(event) => setPasswordForm((prev) => ({ ...prev, new_password: event.target.value }))}
-                    className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 pr-14 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-6 py-4 pr-14 text-sm font-bold text-slate-900 dark:text-white focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                   />
-                  <button type="button" onClick={() => setShowNewPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                  <button type="button" onClick={() => setShowNewPassword((prev) => !prev)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer">
                     {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
@@ -368,18 +382,18 @@ const Settings = () => {
                   type="password"
                   value={passwordForm.confirm_password}
                   onChange={(event) => setPasswordForm((prev) => ({ ...prev, confirm_password: event.target.value }))}
-                  className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 px-6 py-4 text-sm font-bold text-slate-900 dark:text-white focus:border-blue-600 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                 />
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
-                <button type="button" onClick={closeChangePassword} className="rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-widest text-slate-500 hover:bg-slate-100">
+                <button type="button" onClick={closeChangePassword} className="rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingPassword}
-                  className="rounded-2xl bg-[#0A1128] px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-2xl bg-[#0A1128] dark:bg-blue-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
                 >
                   {savingPassword ? 'Saving...' : 'Update Password'}
                 </button>
@@ -394,14 +408,14 @@ const Settings = () => {
 
 // Security Row Component
 const SecurityItem = ({ icon: Icon, label, status, onClick }) => (
-  <button type="button" onClick={onClick} className="flex w-full items-center justify-between rounded-3xl border border-slate-50 p-6 text-left transition-all hover:bg-slate-50 group">
+  <button type="button" onClick={onClick} className="flex w-full items-center justify-between rounded-3xl border border-slate-50 dark:border-slate-800 p-6 text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-850/50 group cursor-pointer bg-white dark:bg-slate-900">
     <div className="flex items-center gap-4">
-      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-blue-600 shadow-sm transition-colors">
+      <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-blue-600 shadow-sm transition-colors">
         <Icon size={20} />
       </div>
       <div>
-        <p className="font-bold text-slate-900">{label}</p>
-        <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5 text-slate-400">{status}</p>
+        <p className="font-bold text-slate-900 dark:text-white">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5 text-slate-400 dark:text-slate-500">{status}</p>
       </div>
     </div>
     <ChevronRight size={18} className="text-slate-300 group-hover:text-slate-600" />

@@ -30,6 +30,7 @@ const Login = ({ isOpen, onClose, openRegister, openForgot }) => {
         // 2. save user name to localStorage and state
         const nameToStore = response.data.user || "User";
         localStorage.setItem('userName', nameToStore);
+        localStorage.setItem('userEmail', email);
 
         toast.success(`Welcome back, ${nameToStore}!`, { id: loadToast });
         

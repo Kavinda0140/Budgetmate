@@ -347,46 +347,46 @@ const Bills = () => {
         
         {/*  Left Side: Calendar / List View Container */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm">
             
             {/*  Header with Navigation & Switcher */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
               <div className="flex items-center gap-4">
-                <h3 className="text-2xl font-black text-slate-900 min-w-[180px]">
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white min-w-[180px]">
                   {months[currentMonthIndex]} {currentYear}
                 </h3>
                 <div className="flex gap-2">
-                  <button onClick={handlePrevMonth} className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 active:scale-90 transition-all">
+                  <button onClick={handlePrevMonth} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500 active:scale-90 transition-all">
                     <ChevronLeft size={20}/>
                   </button>
-                  <button onClick={handleNextMonth} className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 active:scale-90 transition-all">
+                  <button onClick={handleNextMonth} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 dark:text-slate-500 active:scale-90 transition-all">
                     <ChevronRight size={20}/>
                   </button>
                 </div>
               </div>
 
               {/* View Switcher Tabs */}
-              <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-100">
+              <div className="flex bg-slate-50 dark:bg-slate-805 p-1 rounded-xl border border-slate-100 dark:border-slate-800">
                  <button 
                    onClick={() => setViewMode('month')}
-                   className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === 'month' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}
+                   className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === 'month' ? 'bg-white dark:bg-slate-905 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`}
                  >Month</button>
                  <button 
                    onClick={() => setViewMode('list')}
-                   className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-400'}`}
+                   className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-905 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`}
                  >List</button>
               </div>
             </div>
 
             {viewMode === 'month' ? (
-              <div className="grid grid-cols-7 gap-px bg-slate-100 border border-slate-100 rounded-[2rem] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+              <div className="grid grid-cols-7 gap-px bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 rounded-[2rem] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="bg-slate-50 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">{day}</div>
+                  <div key={day} className="bg-slate-50 dark:bg-slate-850 py-4 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{day}</div>
                 ))}
 
                 {/*: Leading empty cells to align day 1 to the correct weekday */}
                 {Array.from({ length: startDayOffset }).map((_, i) => (
-                  <div key={`empty-${i}`} className="bg-white h-24" />
+                  <div key={`empty-${i}`} className="bg-white dark:bg-slate-900 h-24" />
                 ))}
 
                 {calendarDays.map(day => {
@@ -395,9 +395,9 @@ const Bills = () => {
                     <div 
                       key={day} 
                       onClick={() => setSelectedDate(day)}
-                      className={`bg-white h-24 p-3 relative hover:bg-blue-50/30 transition-all cursor-pointer ${selectedDate === day ? 'bg-blue-50/40' : ''}`}
+                      className={`bg-white dark:bg-slate-900 h-24 p-3 relative hover:bg-blue-50/30 dark:hover:bg-blue-950/20 transition-all cursor-pointer ${selectedDate === day ? 'bg-blue-50/40 dark:bg-blue-955/20' : ''}`}
                     >
-                      <span className={`text-xs font-bold ${selectedDate === day ? 'bg-blue-600 text-white w-7 h-7 flex items-center justify-center rounded-full shadow-lg' : 'text-slate-400'}`}>
+                      <span className={`text-xs font-bold ${selectedDate === day ? 'bg-blue-600 text-white w-7 h-7 flex items-center justify-center rounded-full shadow-lg shadow-blue-900/30' : 'text-slate-400 dark:text-slate-500'}`}>
                         {day}
                       </span>
                       {hasBill && (
@@ -410,23 +410,23 @@ const Bills = () => {
             ) : (
               <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
                 {visibleSubs.length === 0 && (
-                  <p className="text-center text-slate-400 text-sm py-10">No bills due in {months[currentMonthIndex]}.</p>
+                  <p className="text-center text-slate-400 dark:text-slate-500 text-sm py-10">No bills due in {months[currentMonthIndex]}.</p>
                 )}
                 {visibleSubs.map((sub, i) => {
                   return (
-                  <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-blue-200 hover:bg-white transition-all group">
+                  <div key={i} className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-850 rounded-[2rem] border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 hover:bg-white dark:hover:bg-slate-900 transition-all group">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 ${sub.bg_color} rounded-2xl flex items-center justify-center`}>
+                      <div className={`w-12 h-12 ${sub.bg_color} dark:bg-slate-800 rounded-2xl flex items-center justify-center`}>
                         <img src={sub.icon_url || DEFAULT_ICON} className="w-7 h-7 object-contain" alt="" />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900">{sub.name}</p>
-                        <p className="text-xs text-slate-400 font-medium tracking-tight">Due on {months[currentMonthIndex]} {sub.due_day}</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{sub.name}</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium tracking-tight">Due on {months[currentMonthIndex]} {sub.due_day}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-black text-lg text-slate-900">${sub.amount}</p>
-                      <p className="text-[10px] font-bold text-blue-500 uppercase">{sub.billing_type}</p>
+                      <p className="font-black text-lg text-slate-900 dark:text-white">${sub.amount}</p>
+                      <p className="text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase">{sub.billing_type}</p>
                     </div>
                   </div>
                   );
@@ -456,15 +456,15 @@ const Bills = () => {
 
         {/*  Right Side: Summary & Details */}
         <div className="space-y-8">
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm">
              <div className="flex justify-between items-center mb-10">
-                <h4 className="text-xl font-black text-slate-900">Active Subs</h4>
+                <h4 className="text-xl font-black text-slate-900 dark:text-white">Active Subs</h4>
                 <button
                   onClick={() => {
                     setAddError('');
                     setShowAddModal(true);
                   }}
-                  className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"
+                  className="w-10 h-10 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all"
                 >
                   <Plus size={20}/>
                 </button>
@@ -472,25 +472,25 @@ const Bills = () => {
              
              <div className="space-y-7">
                 {subscriptions.map((sub, i) => (
-                  <div key={i} className={`flex items-center justify-between group cursor-pointer p-1 rounded-2xl transition-all ${selectedDate === Number(sub.due_day) ? 'bg-blue-50/50' : ''}`}>
+                  <div key={i} className={`flex items-center justify-between group cursor-pointer p-1 rounded-2xl transition-all ${selectedDate === Number(sub.due_day) ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>
                     <div className="flex items-center gap-4">
-                       <div className={`w-14 h-14 ${sub.bg_color} rounded-2xl flex items-center justify-center border border-slate-50 shadow-sm transition-transform group-hover:scale-110`}>
+                       <div className={`w-14 h-14 ${sub.bg_color} dark:bg-slate-800 rounded-2xl flex items-center justify-center border border-slate-50 dark:border-slate-800 shadow-sm transition-transform group-hover:scale-110`}>
                           <img src={sub.icon_url || DEFAULT_ICON} alt={sub.name} className="w-8 h-8 object-contain" />
                        </div>
                        <div>
-                          <p className="font-bold text-slate-900 text-[15px]">{sub.name}</p>
-                          <p className={`text-[10px] font-black uppercase mt-0.5 ${selectedDate === Number(sub.due_day) ? 'text-blue-600 animate-pulse' : 'text-slate-400'}`}>
+                          <p className="font-bold text-slate-900 dark:text-white text-[15px]">{sub.name}</p>
+                          <p className={`text-[10px] font-black uppercase mt-0.5 ${selectedDate === Number(sub.due_day) ? 'text-blue-600 dark:text-blue-400 animate-pulse' : 'text-slate-400 dark:text-slate-500'}`}>
                              {selectedDate === Number(sub.due_day) ? "Due Today" : `Day ${sub.due_day}`}
                           </p>
                        </div>
                     </div>
                     <div className="text-right">
-                       <p className="font-black text-slate-900">${sub.amount}</p>
+                       <p className="font-black text-slate-900 dark:text-white">${sub.amount}</p>
                     </div>
                   </div>
                 ))}
              </div>
-             <button onClick={openManageBilling} className="w-full mt-10 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-slate-100 transition-all">Manage Billing</button>
+             <button onClick={openManageBilling} className="w-full mt-10 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-750 transition-all">Manage Billing</button>
           </div>
 
           {/*  Summary Total Card */}
@@ -508,14 +508,14 @@ const Bills = () => {
         </div>
 
       </div>
-          {showAddModal && (
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-3xl w-full max-w-md">
-          <h3 className="text-xl font-bold mb-4">Add Subscription</h3>
+      {showAddModal && (
+      <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 p-6 rounded-3xl w-full max-w-md shadow-2xl">
+          <h3 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Add Subscription</h3>
 
           <form onSubmit={handleAddSubscription} className="space-y-4">
               {addError && (
-                <div className="rounded-2xl bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+                <div className="rounded-2xl bg-red-50 dark:bg-red-950/35 border border-red-200 dark:border-red-900/40 p-3 text-sm text-red-700 dark:text-red-400">
                   {addError}
                 </div>
               )}
@@ -523,7 +523,7 @@ const Bills = () => {
             <input
               type="text"
               placeholder="Subscription Name"
-              className="w-full border rounded-xl p-3"
+              className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -534,7 +534,7 @@ const Bills = () => {
             <input
               type="number"
               placeholder="Amount"
-              className="w-full border rounded-xl p-3"
+              className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
               value={formData.amount}
               onChange={(e) =>
                 setFormData({ ...formData, amount: e.target.value })
@@ -543,23 +543,23 @@ const Bills = () => {
             />
 
             <select
-                className="w-full border rounded-xl p-3"
+                className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
                 value={formData.billing_type}
                 onChange={e => setFormData({ ...formData, billing_type: e.target.value })}
               >
-                <option value="Monthly">Monthly</option>
-                <option value="Annual">Annual</option>
+                <option value="Monthly" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Monthly</option>
+                <option value="Annual" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Annual</option>
               </select>
 
               {/* ✅ Show due month picker only for Annual */}
               {formData.billing_type === 'Annual' && (
                 <select
-                  className="w-full border rounded-xl p-3"
+                  className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
                   value={formData.due_month}
                   onChange={e => setFormData({ ...formData, due_month: Number(e.target.value) })}
                 >
                   {months.map((m, i) => (
-                    <option key={i} value={i}>{m}</option>
+                    <option key={i} value={i} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{m}</option>
                   ))}
                 </select>
               )}
@@ -567,18 +567,18 @@ const Bills = () => {
               <input
                 type="number"
                 placeholder="Due Day (1-31)"
-                className="w-full border rounded-xl p-3"
+                className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
                 value={formData.due_day}
                 onChange={e => setFormData({ ...formData, due_day: e.target.value })}
                 required
               />
 
-            <p className="text-xs text-slate-500 mb-2">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
               Choose an icon, enter a custom icon URL, or leave blank to use the default icon.
             </p>
             
             <select
-              className="w-full border rounded-xl p-3"
+              className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
               onChange={(e) => {
                 const preset = iconPresets[e.target.value];
 
@@ -591,17 +591,17 @@ const Bills = () => {
                 }
               }}
             >
-              <option value="">Choose a Service (Optional)</option>
-              <option value="Netflix">Netflix</option>
-              <option value="Spotify">Spotify</option>
-              <option value="Google">Google One</option>
-              <option value="YouTube">YouTube Premium</option>
-              <option value="Amazon">Amazon Prime</option>
+              <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Choose a Service (Optional)</option>
+              <option value="Netflix" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Netflix</option>
+              <option value="Spotify" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Spotify</option>
+              <option value="Google" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Google One</option>
+              <option value="YouTube" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">YouTube Premium</option>
+              <option value="Amazon" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Amazon Prime</option>
             </select>
             <input
               type="text"
               placeholder="Custom Icon URL (optional)"
-              className="w-full border rounded-xl p-3"
+              className="w-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-3 focus:outline-none focus:border-blue-600"
               value={formData.icon_url}
               onChange={(e) =>
                 setFormData({
@@ -618,8 +618,6 @@ const Bills = () => {
               />
             </div>
 
-            
-
             <div className="flex gap-3">
               <button
                 type="button"
@@ -627,7 +625,7 @@ const Bills = () => {
                   setShowAddModal(false);
                   setAddError('');
                 }}
-                className="flex-1 py-3 bg-slate-100 rounded-xl"
+                className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl"
                 disabled={isAdding}
               >
                 Cancel
@@ -635,7 +633,7 @@ const Bills = () => {
 
               <button
                 type="submit"
-                className="flex-1 py-3 bg-blue-600 text-white rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex-1 py-3 bg-blue-600 text-white rounded-xl disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-blue-900/20"
                 disabled={isAdding}
               >
                 {isAdding ? 'Adding...' : 'Add'}
@@ -647,17 +645,17 @@ const Bills = () => {
       </div>
     )}
     {showManageModal && (
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 py-8">
-        <div className="bg-white rounded-3xl w-full max-w-6xl shadow-2xl overflow-hidden">
-          <div className="flex items-center justify-between p-6 border-b border-slate-200">
+      <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 py-8">
+        <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-3xl w-full max-w-6xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <h3 className="text-xl font-bold">Manage Billing</h3>
-              <p className="text-sm text-slate-500">Select a subscription to update details or cancel it.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Manage Billing</h3>
+              <p className="text-sm text-slate-550 dark:text-slate-400">Select a subscription to update details or cancel it.</p>
             </div>
             <button
               type="button"
               onClick={() => setShowManageModal(false)}
-              className="px-4 py-2 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               Close
             </button>
@@ -665,7 +663,7 @@ const Bills = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 p-6">
             <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-2">
               {subscriptions.length === 0 ? (
-                <div className="rounded-3xl bg-slate-50 p-6 text-center text-slate-500">
+                <div className="rounded-3xl bg-slate-50 dark:bg-slate-850 p-6 text-center text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-800">
                   No active subscriptions to manage.
                 </div>
               ) : (
@@ -674,16 +672,16 @@ const Bills = () => {
                     key={sub.id}
                     type="button"
                     onClick={() => handleSelectSubscription(sub)}
-                    className={`w-full text-left rounded-3xl p-4 border transition-all ${selectedSub?.id === sub.id ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                    className={`w-full text-left rounded-3xl p-4 border transition-all ${selectedSub?.id === sub.id ? 'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-955/20' : 'border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'}`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 ${sub.bg_color} rounded-2xl flex items-center justify-center`}>
+                      <div className={`w-12 h-12 ${sub.bg_color} dark:bg-slate-800 rounded-2xl flex items-center justify-center`}>
                         <img src={sub.icon_url || DEFAULT_ICON} alt={sub.name} className="w-7 h-7 object-contain" />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-slate-900">{sub.name}</p>
-                        <p className="text-xs text-slate-500">{sub.billing_type} • ${sub.amount}</p>
-                        <p className="text-xs text-slate-400">Due {sub.billing_type === 'Annual' && sub.due_month !== null ? `${months[sub.due_month]} ${sub.due_day}` : `Day ${sub.due_day}`}</p>
+                      <div className="flex-1 text-slate-900 dark:text-white">
+                        <p className="font-bold">{sub.name}</p>
+                        <p className="text-xs text-slate-550 dark:text-slate-400">{sub.billing_type} • ${sub.amount}</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-500">Due {sub.billing_type === 'Annual' && sub.due_month !== null ? `${months[sub.due_month]} ${sub.due_day}` : `Day ${sub.due_day}`}</p>
                       </div>
                     </div>
                   </button>
@@ -691,64 +689,64 @@ const Bills = () => {
               )}
             </div>
 
-            <div className="rounded-3xl bg-slate-50 p-6">
+            <div className="rounded-3xl bg-slate-50 dark:bg-slate-850 border border-slate-100 dark:border-slate-800/60 p-6">
               {selectedSub ? (
                 <form onSubmit={handleUpdateSubscription} className="space-y-4">
                   {manageError && (
-                    <div className="rounded-2xl bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+                    <div className="rounded-2xl bg-red-50 dark:bg-red-955/20 border border-red-200 dark:border-red-900/40 p-3 text-sm text-red-700 dark:text-red-400">
                       {manageError}
                     </div>
                   )}
                   <div>
-                    <label className="text-xs font-bold uppercase text-slate-500">Subscription</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-405">Subscription</label>
                     <input
                       type="text"
-                      className="w-full mt-2 rounded-2xl border border-slate-200 p-3"
+                      className="w-full mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-3 focus:outline-none focus:border-blue-600 transition-colors"
                       value={manageForm.name}
                       onChange={(e) => setManageForm({ ...manageForm, name: e.target.value })}
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold uppercase text-slate-500">Amount</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-405">Amount</label>
                     <input
                       type="number"
-                      className="w-full mt-2 rounded-2xl border border-slate-200 p-3"
+                      className="w-full mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-3 focus:outline-none focus:border-blue-600 transition-colors"
                       value={manageForm.amount}
                       onChange={(e) => setManageForm({ ...manageForm, amount: e.target.value })}
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold uppercase text-slate-500">Billing Type</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-405">Billing Type</label>
                     <select
-                      className="w-full mt-2 rounded-2xl border border-slate-200 p-3"
+                      className="w-full mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-3 focus:outline-none focus:border-blue-600"
                       value={manageForm.billing_type}
                       onChange={(e) => setManageForm({ ...manageForm, billing_type: e.target.value })}
                     >
-                      <option value="Monthly">Monthly</option>
-                      <option value="Annual">Annual</option>
+                      <option value="Monthly" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Monthly</option>
+                      <option value="Annual" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Annual</option>
                     </select>
                   </div>
                   {manageForm.billing_type === 'Annual' && (
                     <div>
-                      <label className="text-xs font-bold uppercase text-slate-500">Due Month</label>
+                      <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-405">Due Month</label>
                       <select
-                        className="w-full mt-2 rounded-2xl border border-slate-200 p-3"
+                        className="w-full mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-3 focus:outline-none focus:border-blue-600"
                         value={manageForm.due_month}
                         onChange={(e) => setManageForm({ ...manageForm, due_month: Number(e.target.value) })}
                       >
                         {months.map((m, i) => (
-                          <option key={i} value={i}>{m}</option>
+                          <option key={i} value={i} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{m}</option>
                         ))}
                       </select>
                     </div>
                   )}
                   <div>
-                    <label className="text-xs font-bold uppercase text-slate-500">Due Day</label>
+                    <label className="text-xs font-bold uppercase text-slate-500 dark:text-slate-405">Due Day</label>
                     <input
                       type="number"
-                      className="w-full mt-2 rounded-2xl border border-slate-200 p-3"
+                      className="w-full mt-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-3 focus:outline-none focus:border-blue-600 transition-colors"
                       value={manageForm.due_day}
                       onChange={(e) => setManageForm({ ...manageForm, due_day: e.target.value })}
                       required
@@ -758,23 +756,23 @@ const Bills = () => {
                     <button
                       type="button"
                       onClick={() => handleCancelSubscription(selectedSub.id)}
-                      className="flex-1 py-3 rounded-2xl bg-red-500 text-white hover:bg-red-400"
+                      className="flex-1 py-3 rounded-2xl bg-red-500 text-white hover:bg-red-400 shadow-lg shadow-red-900/10"
                     >
                       Cancel Subscription
                     </button>
                     <button
                       type="submit"
                       disabled={isUpdating}
-                      className={`flex-1 py-3 rounded-2xl text-white transition-all ${isUpdating ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500'}`}
+                      className={`flex-1 py-3 rounded-2xl text-white transition-all ${isUpdating ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-900/15'}`}
                     >
                       {isUpdating ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="flex h-full flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white p-10 text-center">
-                  <p className="font-bold text-slate-900">Select a subscription</p>
-                  <p className="text-sm text-slate-500 mt-2">Choose one from the left to update or cancel it.</p>
+                <div className="flex h-full flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-10 text-center">
+                  <p className="font-bold text-slate-900 dark:text-white">Select a subscription</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">Choose one from the left to update or cancel it.</p>
                 </div>
               )}
             </div>
@@ -783,48 +781,48 @@ const Bills = () => {
       </div>
     )}
     {showOptimizeModal && (
-      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 py-8">
-        <div className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden">
-          <div className="flex items-center justify-between p-6 border-b border-slate-200">
+      <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 py-8">
+        <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <h3 className="text-xl font-bold">Smart Cancellation</h3>
-              <p className="text-sm text-slate-500">Recommendations to reduce your subscription spend.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Smart Cancellation</h3>
+              <p className="text-sm text-slate-550 dark:text-slate-400">Recommendations to reduce your subscription spend.</p>
             </div>
             <button
               type="button"
               onClick={() => setShowOptimizeModal(false)}
-              className="px-4 py-2 bg-slate-100 rounded-2xl text-slate-600 hover:bg-slate-200"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               Close
             </button>
           </div>
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Active Subs</p>
-                <p className="mt-3 text-3xl font-black text-slate-900">{subscriptions.length}</p>
+              <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 font-bold">Active Subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900 dark:text-white">{subscriptions.length}</p>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Annual Subs</p>
-                <p className="mt-3 text-3xl font-black text-slate-900">{annualSubs.length}</p>
+              <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 font-bold">Annual Subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900 dark:text-white">{annualSubs.length}</p>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Total cost of monthly subs</p>
-                <p className="mt-3 text-3xl font-black text-slate-900">${totalMonthlyCommitmentOnly.toFixed(2)}</p>
+              <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 font-bold">Total cost of monthly subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900 dark:text-white">${totalMonthlyCommitmentOnly.toFixed(2)}</p>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Total cost of annual subs</p>
-                <p className="mt-3 text-3xl font-black text-slate-900">${totalAnnual.toFixed(2)}</p>
+              <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-5 text-center">
+                <p className="text-xs uppercase tracking-[0.3em] text-slate-400 dark:text-slate-500 font-bold">Total cost of annual subs</p>
+                <p className="mt-3 text-3xl font-black text-slate-900 dark:text-white">${totalAnnual.toFixed(2)}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <h4 className="text-lg font-bold">Recommendations</h4>
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white">Recommendations</h4>
                 <div className="relative group">
-                  <Info size={16} className="text-slate-400 hover:text-slate-700" />
-                  <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 text-xs text-slate-600 shadow-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                    <p className="font-semibold text-slate-900 mb-2">How recommendations are calculated</p>
+                  <Info size={16} className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-350 cursor-pointer" />
+                  <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 w-72 -translate-x-1/2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 text-xs text-slate-650 dark:text-slate-400 shadow-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    <p className="font-semibold text-slate-900 dark:text-white mb-2">How recommendations are calculated</p>
                     <ul className="list-disc space-y-1 pl-4">
                       {optimizationTooltipLines.map((line, index) => (
                         <li key={index}>{line}</li>
@@ -835,19 +833,19 @@ const Bills = () => {
               </div>
               <div className="grid gap-4">
                 {optimizeRecommendations.length === 0 ? (
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
+                  <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-6 text-center text-slate-500 dark:text-slate-400">
                     No optimization recommendations found right now.
                   </div>
                 ) : optimizeRecommendations.map((rec) => (
-                  <div key={rec.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                  <div key={rec.id} className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 p-6">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="text-xs uppercase tracking-[0.3em] text-blue-500">{rec.title}</p>
-                        <p className="mt-3 text-sm font-semibold text-slate-900">{rec.description}</p>
+                        <p className="text-xs uppercase tracking-[0.3em] text-blue-500 dark:text-blue-400 font-bold">{rec.title}</p>
+                        <p className="mt-3 text-sm font-semibold text-slate-900 dark:text-white">{rec.description}</p>
                       </div>
-                      <span className="rounded-full bg-blue-100 px-3 py-1 text-[11px] font-bold text-blue-700 uppercase tracking-[0.2em]">Review</span>
+                      <span className="rounded-full bg-blue-100 dark:bg-blue-950 px-3 py-1 text-[11px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-[0.2em]">Review</span>
                     </div>
-                    <p className="mt-3 text-sm text-slate-500">{rec.detail}</p>
+                    <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">{rec.detail}</p>
                   </div>
                 ))}
               </div>
@@ -860,14 +858,14 @@ const Bills = () => {
                   setShowOptimizeModal(false);
                   openManageBilling();
                 }}
-                className="w-full md:w-auto rounded-2xl bg-blue-600 px-6 py-3 text-sm font-black text-white hover:bg-blue-500"
+                className="w-full md:w-auto rounded-2xl bg-blue-600 px-6 py-3 text-sm font-black text-white hover:bg-blue-500 shadow-lg shadow-blue-900/20"
               >
                 Review Subscriptions
               </button>
               <button
                 type="button"
                 onClick={() => setShowOptimizeModal(false)}
-                className="w-full md:w-auto rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100"
+                className="w-full md:w-auto rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 py-3 text-sm font-bold text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Close
               </button>

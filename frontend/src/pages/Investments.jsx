@@ -164,23 +164,23 @@ const Investments = () => {
         <div className="lg:col-span-2 space-y-10">
 
           {/* Chart Card */}
-          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-100 dark:border-slate-800 shadow-sm space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-black text-slate-900">Portfolio Performance</h2>
-                <p className="text-xs text-slate-400 font-bold mt-0.5 uppercase tracking-wider">Historical net asset growth</p>
+                <h2 className="text-xl font-black text-slate-900 dark:text-white">Portfolio Performance</h2>
+                <p className="text-xs text-slate-400 dark:text-slate-505 font-bold mt-0.5 uppercase tracking-wider">Historical net asset growth</p>
               </div>
 
               {/* TIMEFRAME BUTTONS */}
-              <div className="flex gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+              <div className="flex gap-2 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-700">
                 {['1W', '1M', '1Y'].map((t) => (
                   <button
                     key={t}
                     onClick={() => fetchHistory(t)}
                     className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
                       timeframe === t
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-100'
-                        : 'text-slate-400 hover:text-slate-800'
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/30'
+                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-350'
                     }`}
                   >
                     {t}
@@ -229,15 +229,15 @@ const Investments = () => {
           </div>
 
           {/* Active Assets Card */}
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm">
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h3 className="text-xl font-black text-slate-900">Portfolio Assets</h3>
-                <p className="text-xs text-slate-400 font-bold mt-0.5 uppercase tracking-wider">All linked active allocations</p>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white">Portfolio Assets</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-505 font-bold mt-0.5 uppercase tracking-wider">All linked active allocations</p>
               </div>
               <button 
                 onClick={openAdd} 
-                className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all bg-blue-50/50 hover:bg-blue-50 px-4 py-2.5 rounded-xl border border-blue-100/50"
+                className="text-blue-600 dark:text-blue-405 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all bg-blue-50/50 dark:bg-blue-950/20 hover:bg-blue-50 dark:hover:bg-blue-950/40 px-4 py-2.5 rounded-xl border border-blue-100/50 dark:border-blue-900/30"
               >
                 <Plus size={16} /> Add Asset
               </button>
@@ -245,22 +245,22 @@ const Investments = () => {
 
             {assetsLoading && (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="animate-spin text-slate-300" size={28} />
+                <Loader2 className="animate-spin text-slate-300 dark:text-slate-650" size={28} />
               </div>
             )}
 
             {!assetsLoading && error && (
               <div className="text-center py-10">
                 <p className="text-red-400 text-sm font-medium mb-4">{error}</p>
-                <button onClick={fetchAssets} className="text-blue-600 text-xs font-black uppercase tracking-widest hover:underline">Retry</button>
+                <button onClick={fetchAssets} className="text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest hover:underline">Retry</button>
               </div>
             )}
 
             {!assetsLoading && !error && assets.length === 0 && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-slate-400 dark:text-slate-550">
                 <Briefcase size={40} className="mx-auto mb-4 opacity-30" />
                 <p className="text-sm font-medium">No assets in your portfolio yet.</p>
-                <button onClick={openAdd} className="mt-4 text-blue-600 font-black text-[10px] uppercase tracking-widest hover:underline">
+                <button onClick={openAdd} className="mt-4 text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest hover:underline">
                   Add your first asset
                 </button>
               </div>
@@ -271,15 +271,15 @@ const Investments = () => {
                 {assets.map((asset) => (
                   <div
                     key={asset.id}
-                    className="flex items-center justify-between p-6 rounded-[2rem] border border-slate-50 hover:border-slate-200 bg-white hover:shadow-lg hover:shadow-slate-100/30 transition-all group"
+                    className="flex items-center justify-between p-6 rounded-[2rem] border border-slate-50 dark:border-slate-850 hover:border-slate-200 dark:hover:border-slate-700 bg-white dark:bg-slate-900 hover:shadow-lg hover:shadow-slate-100/30 transition-all group"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shadow-md shadow-blue-100/10 group-hover:rotate-6 transition-transform">
+                      <div className="w-12 h-12 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center shadow-md shadow-blue-100/10 dark:shadow-none group-hover:rotate-6 transition-transform">
                         <Briefcase size={20} />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900">{asset.asset_name}</p>
-                        <span className="text-[9px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg">
+                        <p className="font-bold text-slate-900 dark:text-white">{asset.asset_name}</p>
+                        <span className="text-[9px] font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-lg">
                           {asset.asset_type}
                         </span>
                       </div>
@@ -287,7 +287,7 @@ const Investments = () => {
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <p className="font-black text-slate-900">
+                        <p className="font-black text-slate-900 dark:text-white">
                           ${parseFloat(asset.current_value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                         <div className="flex items-center gap-1 justify-end mt-1">
@@ -302,16 +302,16 @@ const Investments = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 border-l pl-3 border-slate-100">
+                      <div className="flex items-center gap-1 border-l pl-3 border-slate-100 dark:border-slate-800">
                         <button
                           onClick={() => openEdit(asset)}
-                          className="p-2 rounded-xl text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-xl text-slate-300 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Pencil size={15} />
                         </button>
                         <button
                           onClick={() => handleDelete(asset.id)}
-                          className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -349,17 +349,17 @@ const Investments = () => {
           </div>
 
           {/* Allocation Tip Card */}
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-center relative overflow-hidden group">
-            <div className="w-20 h-20 bg-blue-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
-              <ArrowUpRight className="text-blue-600" size={32} />
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm text-center relative overflow-hidden group">
+            <div className="w-20 h-20 bg-blue-50 dark:bg-blue-950/30 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
+              <ArrowUpRight className="text-blue-600 dark:text-blue-400" size={32} />
             </div>
-            <h4 className="font-black text-slate-900 mb-3 tracking-tight">Portfolio Optimization</h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
+            <h4 className="font-black text-slate-900 dark:text-white mb-3 tracking-tight">Portfolio Optimization</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               Based on modern portfolio theory, holding multiple asset classes (Stocks, Crypto, ETFs) can help hedge against volatility.
             </p>
             <button 
               onClick={openAdd}
-              className="mt-8 w-full py-4 bg-slate-50 hover:bg-[#0A1128] hover:text-white text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+              className="mt-8 w-full py-4 bg-slate-50 dark:bg-slate-800 hover:bg-[#0A1128] dark:hover:bg-[#0A1128] hover:text-white dark:hover:text-white text-slate-600 dark:text-slate-300 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
             >
               Link New Asset
             </button>
@@ -367,18 +367,18 @@ const Investments = () => {
         </div>
       </div>
 
-      {/* ── Add / Edit Modal ────────────────────────────────────────────────── */}
+      {/* -- Add / Edit Modal -------------------------------------------------- */}
       {modalMode && (
         <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative max-h-[90vh] overflow-y-auto">
-            <button onClick={closeModal} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 transition-colors">
+          <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative max-h-[90vh] overflow-y-auto">
+            <button onClick={closeModal} className="absolute top-8 right-8 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
               <X size={24} />
             </button>
 
-            <h3 className="text-2xl font-black text-slate-900 mb-2">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
               {modalMode === 'edit' ? "Edit Asset" : "Add New Asset"}
             </h3>
-            <p className="text-sm text-slate-400 font-medium mb-8">
+            <p className="text-sm text-slate-400 dark:text-slate-505 font-medium mb-8">
               {modalMode === 'edit' ? "Update asset holdings and performance." : "Add a stock, crypto token, or fund to tracker."}
             </p>
 
@@ -386,40 +386,40 @@ const Investments = () => {
 
               {/* Asset Name */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Name</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Asset Name</label>
                 <div className="relative">
                   <input
                     type="text" required placeholder="e.g. Apple Stock, Bitcoin"
                     value={form.asset_name}
                     onChange={e => setForm({ ...form, asset_name: e.target.value })}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                    className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                   />
                 </div>
               </div>
 
               {/* Asset Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Asset Type</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Asset Type</label>
                 <select
                   value={form.asset_type}
                   onChange={e => setForm({ ...form, asset_type: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 >
-                  {assetTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                  {assetTypes.map(t => <option key={t} value={t} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{t}</option>)}
                 </select>
               </div>
 
               {/* Current Value */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Current Value ($)</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Current Value ($)</label>
                 <div className="relative">
                   <input
                     type="number" step="0.01" min="0" required placeholder="0.00"
                     value={form.current_value}
                     onChange={e => setForm({ ...form, current_value: e.target.value })}
-                    className="w-full px-6 py-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                    className="w-full px-6 py-4 pl-12 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                   />
-                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-550 font-bold text-sm">
                     <DollarSign size={16} />
                   </div>
                 </div>
@@ -427,15 +427,15 @@ const Investments = () => {
 
               {/* Growth Percentage */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Growth rate (%)</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Growth rate (%)</label>
                 <div className="relative">
                   <input
                     type="number" step="0.01" required placeholder="0.00"
                     value={form.growth_percentage}
                     onChange={e => setForm({ ...form, growth_percentage: e.target.value })}
-                    className="w-full px-6 py-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                    className="w-full px-6 py-4 pl-12 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                   />
-                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-550 font-bold text-sm">
                     <Percent size={16} />
                   </div>
                 </div>

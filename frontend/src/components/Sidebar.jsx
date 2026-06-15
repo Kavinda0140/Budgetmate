@@ -33,10 +33,10 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-slate-100 flex flex-col fixed left-0 top-0 z-50">
+    <div className="w-64 h-screen bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 flex flex-col fixed left-0 top-0 z-50">
       {/* Logo Section */}
       <div className="p-8">
-        <Link to="/dashboard" className="text-xl font-black tracking-tighter text-slate-900">
+        <Link to="/dashboard" className="text-xl font-black tracking-tighter text-slate-900 dark:text-white">
           Budget<span className="text-blue-600">Mate</span>
         </Link>
       </div>
@@ -52,8 +52,8 @@ const Sidebar = () => {
               to={item.path}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer ${
                 isActive 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 dark:shadow-none' 
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <item.icon size={18} />
@@ -64,14 +64,14 @@ const Sidebar = () => {
       </nav>
 
       {/* Bottom Actions (Settings & Logout) */}
-      <div className="p-6 border-t border-slate-50 space-y-2">
+      <div className="p-6 border-t border-slate-50 dark:border-slate-800 space-y-2">
         {/* Settings Link with Active State */}
         <Link 
           to="/settings" 
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer ${
             location.pathname === '/settings' 
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
-              : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 dark:shadow-none' 
+              : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <Settings size={18} /> Settings
@@ -80,7 +80,7 @@ const Sidebar = () => {
         {/* Log Out Button */}
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all cursor-pointer"
         >
           <LogOut size={18} /> Log out
         </button>

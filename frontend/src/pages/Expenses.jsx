@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 
-// ── helpers ──────────────────────────────────────────────────────────────────
+// --- helpers ------------------------------------------------------------------
 
 const API = 'http://localhost:8000';
 
@@ -29,7 +29,7 @@ function getCategoryMeta(name) {
   return CATEGORY_META[name] ?? { icon: ShoppingBag, color: 'bg-slate-500' };
 }
 
-// ── component ─────────────────────────────────────────────────────────────────
+// --- component -----------------------------------------------------------------
 
 const Expenses = () => {
   const [budgets, setBudgets]                 = useState([]);
@@ -47,7 +47,7 @@ const Expenses = () => {
   const [accounts, setAccounts]               = useState([]);
   const [error, setError]                     = useState('');
 
-  // ── fetch budgets from backend ──────────────────────────────────────────────
+  // --- fetch budgets from backend ---------------------------------------------
   const fetchBudgets = async () => {
     try {
       setLoading(true);
@@ -78,7 +78,7 @@ const Expenses = () => {
     void initializeData();
   }, []);
 
-  // ── derived stats ───────────────────────────────────────────────────────────
+  // --- derived stats ----------------------------------------------------------
   const totalLimit     = budgets.reduce((acc, b) => acc + b.monthly_limit, 0);
   const totalSpent     = budgets.reduce((acc, b) => acc + b.spent, 0);
   const totalPercentage = totalLimit > 0
@@ -87,7 +87,7 @@ const Expenses = () => {
 
   const overspentCategory = budgets.find(b => b.spent > b.monthly_limit);
 
-  // ── add new budget ──────────────────────────────────────────────────────────
+  // --- add new budget ---------------------------------------------------------
   const handleAddBudget = async () => {
     if (!newCategory.trim() || !newLimit) {
       setError('Please fill in both fields.');
@@ -110,7 +110,7 @@ const Expenses = () => {
     }
   };
 
-  // ── category expense modal and submit logic ─────────────────────────────────
+  // --- category expense modal and submit logic --------------------------------
   const openCategoryModal = (item) => {
     setSelectedCategory(item);
     setTransactionTitle('');
@@ -173,7 +173,7 @@ const Expenses = () => {
     }
   };
 
-  // ── delete budget ───────────────────────────────────────────────────────────
+  // --- delete budget ----------------------------------------------------------
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${API}/budgets/${id}`, { headers: authHeaders() });
@@ -183,7 +183,7 @@ const Expenses = () => {
     }
   };
 
-  // ── render ──────────────────────────────────────────────────────────────────
+  // --- render -----------------------------------------------------------------
   const notifications = overspentCategory ? [
     {
       id: overspentCategory.id,
@@ -196,14 +196,14 @@ const Expenses = () => {
   return (
     <DashboardLayout title="Budget Management" notifications={notifications}>
 
-      {/* ── Alert Banner ── */}
+      {/* -- Alert Banner -- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {overspentCategory ? (
-          <div className="bg-red-50 border border-red-100 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in slide-in-from-top-4 duration-500">
-            <div className="p-3 bg-red-100 text-red-600 rounded-2xl"><AlertCircle size={24} /></div>
+          <div className="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="p-3 bg-red-100 dark:bg-red-900/35 text-red-600 dark:text-red-400 rounded-2xl"><AlertCircle size={24} /></div>
             <div>
-              <h4 className="font-black text-red-900 text-sm mb-1">Overspending Alert</h4>
-              <p className="text-xs text-red-700 leading-relaxed font-medium">
+              <h4 className="font-black text-red-900 dark:text-red-200 text-sm mb-1">Overspending Alert</h4>
+              <p className="text-xs text-red-700 dark:text-red-400 leading-relaxed font-medium">
                 Your <span className="font-black">{overspentCategory.category}</span> budget has exceeded
                 the limit by <span className="font-black">
                   ${(overspentCategory.spent - overspentCategory.monthly_limit).toFixed(2)}
@@ -212,22 +212,22 @@ const Expenses = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in duration-500">
-            <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl"><AlertCircle size={24} /></div>
+          <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 p-6 rounded-[2rem] flex gap-4 items-start animate-in fade-in duration-500">
+            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/35 text-emerald-600 dark:text-emerald-400 rounded-2xl"><AlertCircle size={24} /></div>
             <div>
-              <h4 className="font-black text-emerald-900 text-sm mb-1">Budget on Track</h4>
-              <p className="text-xs text-emerald-700 leading-relaxed font-medium">
+              <h4 className="font-black text-emerald-900 dark:text-emerald-200 text-sm mb-1">Budget on Track</h4>
+              <p className="text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed font-medium">
                 Great job! All your spending categories are currently within the set limits.
               </p>
             </div>
           </div>
         )}
 
-        <div className="bg-blue-50 border border-blue-100 p-6 rounded-[2rem] flex gap-4 items-start">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-2xl"><Lightbulb size={24} /></div>
+        <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 p-6 rounded-[2rem] flex gap-4 items-start">
+          <div className="p-3 bg-blue-100 dark:bg-blue-900/35 text-blue-600 dark:text-blue-400 rounded-2xl"><Lightbulb size={24} /></div>
           <div>
-            <h4 className="font-black text-blue-900 text-sm mb-1">Smart Tip</h4>
-            <p className="text-xs text-blue-700 leading-relaxed font-medium">
+            <h4 className="font-black text-blue-900 dark:text-blue-200 text-sm mb-1">Smart Tip</h4>
+            <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed font-medium">
               Review your category limits monthly to reflect your actual spending patterns.
             </p>
           </div>
@@ -281,7 +281,7 @@ const Expenses = () => {
               <div
                 key={item.id}
                 onClick={() => openCategoryModal(item)}
-                className={`rounded-[2.5rem] p-8 border transition-all relative overflow-hidden cursor-pointer ${isOver ? 'bg-red-50 border-red-300 shadow-red-100' : 'bg-white border-slate-100 shadow-sm hover:border-blue-200'}`}
+                className={`rounded-[2.5rem] p-8 border transition-all relative overflow-hidden cursor-pointer ${isOver ? 'bg-red-50 dark:bg-red-950/10 border-red-300 dark:border-red-900/50 shadow-red-100/10' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-sm hover:border-blue-200 dark:hover:border-blue-800'}`}
               >
                 {isOver && (
                   <span className="absolute top-6 right-6 bg-red-500 text-white text-[8px] font-black px-2 py-1 rounded-lg uppercase animate-bounce">
@@ -290,34 +290,34 @@ const Expenses = () => {
                 )}
 
                 <div className="flex justify-between items-start mb-6">
-                  <div className={`p-4 rounded-2xl transition-colors ${isOver ? 'bg-red-50 text-red-500' : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'}`}>
+                  <div className={`p-4 rounded-2xl transition-colors ${isOver ? 'bg-red-50 dark:bg-red-950/20 text-red-500' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-505 group-hover:bg-blue-50 dark:group-hover:bg-blue-950 group-hover:text-blue-600'}`}>
                     <Icon size={20} />
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-                    className="text-slate-300 hover:text-red-500 transition-colors"
+                    className="text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-405 transition-colors"
                     title="Remove category"
                   >
                     <Trash2 size={18} />
                   </button>
                 </div>
 
-                <h5 className="font-black text-slate-900 mb-1">{item.category}</h5>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 italic">
+                <h5 className="font-black text-slate-900 dark:text-white mb-1">{item.category}</h5>
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6 italic">
                   Category Limit
                 </p>
 
                 <div className="flex justify-between text-xs font-black mb-3">
-                  <span className="text-slate-900">
+                  <span className="text-slate-900 dark:text-white">
                     ${item.spent.toFixed(2)}{' '}
-                    <span className="text-slate-300 font-medium">/ ${item.monthly_limit.toFixed(2)}</span>
+                    <span className="text-slate-300 dark:text-slate-600 font-medium">/ ${item.monthly_limit.toFixed(2)}</span>
                   </span>
-                  <span className={isOver ? 'text-red-500 font-black' : 'text-slate-400'}>
+                  <span className={isOver ? 'text-red-500 font-black' : 'text-slate-400 dark:text-slate-500'}>
                     {percentage}%
                   </span>
                 </div>
 
-                <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
                   <div
                     className={`${isOver ? 'bg-red-500' : 'bg-blue-600'} h-full transition-all duration-700`}
                     style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -330,7 +330,7 @@ const Expenses = () => {
           {/* Add New Category Button */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="border-2 border-dashed border-blue-400 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-blue-500 bg-blue-50 hover:border-blue-600 hover:text-blue-600 hover:bg-blue-100 transition-all cursor-pointer group"
+            className="border-2 border-dashed border-blue-400 dark:border-blue-800 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/10 hover:border-blue-600 dark:hover:border-blue-555 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-950/30 transition-all cursor-pointer group"
           >
             <Plus size={40} className="mb-3 group-hover:rotate-90 transition-transform duration-300" />
             <p className="text-xs font-black uppercase tracking-[0.2em]">Add Category</p>
@@ -338,31 +338,31 @@ const Expenses = () => {
         </div>
       )}
 
-      {/* ── Add Category Modal ── */}
+      {/* -- Add Category Modal -- */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
+          <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
             <button
               onClick={() => { setIsModalOpen(false); setError(''); }}
-              className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"
+              className="absolute top-8 right-8 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <X size={24} />
             </button>
 
-            <h3 className="text-2xl font-black text-slate-900 mb-2">New Category</h3>
-            <p className="text-sm text-slate-400 font-medium mb-8">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">New Category</h3>
+            <p className="text-sm text-slate-400 dark:text-slate-505 font-medium mb-8">
               Set a monthly limit for your new expense category.
             </p>
 
             {error && (
-              <p className="text-xs text-red-600 font-bold mb-4 bg-red-50 px-4 py-2 rounded-xl">
+              <p className="text-xs text-red-600 font-bold mb-4 bg-red-50 dark:bg-red-950/35 px-4 py-2 rounded-xl">
                 {error}
               </p>
             )}
 
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Category Name
                 </label>
                 <input
@@ -370,12 +370,12 @@ const Expenses = () => {
                   value={newCategory}
                   onChange={e => setNewCategory(e.target.value)}
                   placeholder="e.g. Health & Fitness"
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Monthly Limit ($)
                 </label>
                 <input
@@ -384,14 +384,14 @@ const Expenses = () => {
                   onChange={e => setNewLimit(e.target.value)}
                   placeholder="500"
                   min="1"
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               <button
                 onClick={handleAddBudget}
                 disabled={submitting}
-                className="w-full py-5 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-95 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-5 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-900/30 active:scale-95 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 {submitting ? 'Saving…' : 'Create Category'}
@@ -403,28 +403,28 @@ const Expenses = () => {
 
       {selectedCategory && (
         <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
+          <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative">
             <button
               onClick={closeCategoryModal}
-              className="absolute top-8 right-8 text-slate-400 hover:text-slate-900"
+              className="absolute top-8 right-8 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               <X size={24} />
             </button>
 
-            <h3 className="text-2xl font-black text-slate-900 mb-2">{selectedCategory.category}</h3>
-            <p className="text-sm text-slate-400 font-medium mb-8">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{selectedCategory.category}</h3>
+            <p className="text-sm text-slate-400 dark:text-slate-505 font-medium mb-8">
               Record an expense for this category.
             </p>
 
             {transactionError && (
-              <p className="text-xs text-red-600 font-bold mb-4 bg-red-50 px-4 py-2 rounded-xl">
+              <p className="text-xs text-red-600 font-bold mb-4 bg-red-50 dark:bg-red-950/35 px-4 py-2 rounded-xl">
                 {transactionError}
               </p>
             )}
 
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Expense Description
                 </label>
                 <input
@@ -432,22 +432,22 @@ const Expenses = () => {
                   value={transactionTitle}
                   onChange={e => setTransactionTitle(e.target.value)}
                   placeholder="e.g. Grocery shopping"
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Select Account
                 </label>
                 <select
                   value={transactionAccountId}
                   onChange={e => setTransactionAccountId(e.target.value)}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 >
-                  <option value="">-- Choose account --</option>
+                  <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">-- Choose account --</option>
                   {accounts.map((account) => (
-                    <option key={account.id} value={account.id}>
+                    <option key={account.id} value={account.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                       {account.account_name} — ${parseFloat(account.balance).toFixed(2)}
                     </option>
                   ))}
@@ -455,7 +455,7 @@ const Expenses = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Expense Amount ($)
                 </label>
                 <input
@@ -465,14 +465,14 @@ const Expenses = () => {
                   placeholder="100"
                   min="0"
                   step="0.01"
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               <button
                 onClick={handlePayExpense}
                 disabled={transactionSubmitting}
-                className="w-full py-5 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-100 active:scale-95 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-5 bg-blue-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-blue-900/30 active:scale-95 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {transactionSubmitting && <Loader2 size={16} className="animate-spin" />}
                 {transactionSubmitting ? 'Processing…' : 'Pay'}

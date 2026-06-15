@@ -208,7 +208,7 @@ const Home = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFF] text-slate-900 font-sans overflow-x-hidden selection:bg-blue-100">
+    <div className="min-h-screen bg-[#F8FAFF] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans overflow-x-hidden selection:bg-blue-100 transition-colors duration-300">
 
       {/* ── Global animation keyframes ── */}
       <style>{`
@@ -276,18 +276,18 @@ const Home = () => {
         <div
           className={`max-w-6xl mx-auto backdrop-blur-lg border px-8 flex justify-between items-center shadow-lg shadow-blue-500/5 rounded-full transition-all duration-300 ${
             scrolled
-              ? 'bg-white/90 border-white/60 py-2 shadow-xl shadow-blue-500/10'
-              : 'bg-white/70 border-white/40 py-3'
+              ? 'bg-white/90 dark:bg-slate-900/90 border-white/60 dark:border-slate-800 py-2 shadow-xl shadow-blue-500/10 dark:shadow-none'
+              : 'bg-white/70 dark:bg-slate-900/70 border-white/40 dark:border-slate-800/50 py-3'
           }`}
         >
           <div className="flex items-center">
-            <span className="text-xl font-black tracking-tighter text-slate-900 flex items-center gap-1.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <span className="text-xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-1.5 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <span className="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-md shadow-blue-500/35">B</span>
               Budget<span className="text-blue-600">Mate</span>
             </span>
           </div>
 
-          <nav className="hidden md:flex gap-8 font-semibold text-slate-500 text-[13px] items-center">
+          <nav className="hidden md:flex gap-8 font-semibold text-slate-500 dark:text-slate-400 text-[13px] items-center">
             {['#features', '#how-it-works', '#showcase', '#faqs'].map((href, i) => (
               <a
                 key={href}
@@ -306,10 +306,10 @@ const Home = () => {
 
           <div className="flex items-center gap-4">
             {isLoggedIn ? (
-              <div className="flex items-center gap-4 border-l pl-4 border-slate-200">
+              <div className="flex items-center gap-4 border-l pl-4 border-slate-200 dark:border-slate-800">
                 <div className="text-right hidden sm:block">
                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 text-nowrap">Welcome back</p>
-                  <p className="text-xs font-bold text-slate-900 capitalize">{userName}</p>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white capitalize">{userName}</p>
                 </div>
                 <button title="Dashboard" onClick={() => window.location.href='/dashboard'}
                   className="w-9 h-9 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 hover:scale-105 transition-all shadow-md active:scale-95 cursor-pointer overflow-hidden">
@@ -321,7 +321,7 @@ const Home = () => {
               </div>
             ) : (
               <>
-                <button onClick={() => setIsLoginOpen(true)} className="text-xs font-bold text-slate-600 hover:text-blue-600 transition-colors cursor-pointer">Log in</button>
+                <button onClick={() => setIsLoginOpen(true)} className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">Log in</button>
                 <button onClick={() => setIsRegisterOpen(true)}
                   className="bg-blue-600 text-white px-5 py-2.5 rounded-full font-bold text-xs flex items-center gap-2 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-105 transition-all active:scale-95 shadow-md cursor-pointer">
                   Try Now <MoveRight size={14} />
@@ -338,7 +338,7 @@ const Home = () => {
 
           {/* Badge */}
           <div style={heroTransition(0)}>
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100/50 px-4 py-2 rounded-full shadow-sm">
+            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 border border-blue-100/50 dark:border-blue-900/30 px-4 py-2 rounded-full shadow-sm">
               <Sparkles size={14} className="text-blue-600" />
               <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Intelligent Finance Manager</span>
             </div>
@@ -346,7 +346,7 @@ const Home = () => {
 
           {/* Headline */}
           <div style={heroTransition(120)}>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.05]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.05]">
               Take Control of Your Money.<br />
               Track. Save. Grow.<br />
               <span className="text-blue-600">All in One Place.</span>
@@ -355,7 +355,7 @@ const Home = () => {
 
           {/* Subtitle */}
           <div style={heroTransition(240)}>
-            <p className="text-base sm:text-lg text-slate-500 font-medium leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xl">
               Unlock the full potential of your wealth with a single, AI-powered platform designed to optimize your savings, investments, and expenses without stress.
             </p>
           </div>
@@ -371,7 +371,7 @@ const Home = () => {
                 <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
               </button>
               <a href="#showcase"
-                className="bg-white border border-slate-200/80 text-slate-700 px-8 py-4 rounded-2xl font-bold text-base hover:bg-slate-50 hover:border-slate-300 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-8 py-4 rounded-2xl font-bold text-base hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
                 Explore Features
               </a>
             </div>
@@ -379,7 +379,7 @@ const Home = () => {
 
           {/* Social proof */}
           <div style={heroTransition(480)}>
-            <div className="flex items-center gap-6 pt-4 border-t border-slate-100">
+            <div className="flex items-center gap-6 pt-4 border-t border-slate-100 dark:border-slate-800">
               <div className="flex -space-x-3">
                 {[['JD','blue'], ['EM','indigo'], ['SK','slate']].map(([init, c], i) => (
                   <span key={i} style={{ transitionDelay: `${500 + i * 80}ms`, opacity: heroVisible ? 1 : 0, transform: heroVisible ? 'none' : 'scale(0.7)', transition: 'opacity 0.5s ease, transform 0.5s ease' }}
@@ -389,8 +389,8 @@ const Home = () => {
                 ))}
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-900">Rated 4.9/5 by 15,000+ users</p>
-                <p className="text-[10px] font-semibold text-slate-400">Trusted by modern wealth builders worldwide</p>
+                <p className="text-xs font-bold text-slate-900 dark:text-white">Rated 4.9/5 by 15,000+ users</p>
+                <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Trusted by modern wealth builders worldwide</p>
               </div>
             </div>
           </div>
@@ -437,9 +437,9 @@ const Home = () => {
             </div>
 
             {/* Floating widget: Monthly Spend — float animation */}
-            <div className="absolute right-[-1.5rem] bottom-16 bg-white text-slate-900 p-4 rounded-2xl shadow-xl shadow-blue-950/20 border border-slate-100 max-w-[170px] animate-float-alt hover:scale-105 transition-transform duration-300">
+            <div className="absolute right-[-1.5rem] bottom-16 bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-4 rounded-2xl shadow-xl shadow-blue-950/20 dark:shadow-none border border-slate-100 dark:border-slate-800 max-w-[170px] animate-float-alt hover:scale-105 transition-transform duration-300">
               <div className="flex items-center justify-between gap-4 mb-2">
-                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><Wallet size={14} /></div>
+                <div className="p-1.5 bg-blue-50 dark:bg-blue-950/20 text-blue-600 rounded-lg"><Wallet size={14} /></div>
                 <span className="text-[8px] font-bold uppercase tracking-wider text-slate-400">Monthly Limit</span>
               </div>
               <p className="text-sm font-black text-slate-900">$2,450.00</p>
@@ -449,20 +449,20 @@ const Home = () => {
             </div>
 
             {/* Floating widget: Transaction — opposite float */}
-            <div className="absolute left-[-1.5rem] top-28 bg-white text-slate-900 py-3 px-4 rounded-2xl shadow-xl shadow-blue-950/20 border border-slate-100 flex items-center gap-3 max-w-[190px] animate-float hover:scale-105 transition-transform duration-300">
-              <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center font-bold text-xs"><Activity size={14} /></div>
+            <div className="absolute left-[-1.5rem] top-28 bg-white dark:bg-slate-900 text-slate-900 dark:text-white py-3 px-4 rounded-2xl shadow-xl shadow-blue-950/20 dark:shadow-none border border-slate-100 dark:border-slate-800 flex items-center gap-3 max-w-[190px] animate-float hover:scale-105 transition-transform duration-300">
+              <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-500 flex items-center justify-center font-bold text-xs"><Activity size={14} /></div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Starbucks Coffee</p>
+                <p className="text-xs font-bold text-slate-850 dark:text-slate-200">Starbucks Coffee</p>
                 <p className="text-[9px] text-slate-400 font-semibold">Just now - Expense</p>
               </div>
-              <p className="text-xs font-black text-slate-900">-$4.50</p>
+              <p className="text-xs font-black text-slate-900 dark:text-white">-$4.50</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── STATISTICS ── */}
-      <section className="bg-white border-y border-slate-100 py-12 px-6">
+      <section className="bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800 py-12 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { value: '4.2', suffix: 'B+', label: 'Transactions Tracked' },
@@ -486,9 +486,9 @@ const Home = () => {
       <section id="features" className="py-24 px-6 max-w-6xl mx-auto text-center space-y-16">
         <FadeIn direction="up">
           <div className="space-y-4 max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Features</div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">Intelligent tools tailored to manage your assets</h2>
-            <p className="text-slate-500 font-medium">Everything you need to analyze expenses, schedule bill alerts, and build investment portfolios in a single unified cockpit.</p>
+            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Features</div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Intelligent tools tailored to manage your assets</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Everything you need to analyze expenses, schedule bill alerts, and build investment portfolios in a single unified cockpit.</p>
           </div>
         </FadeIn>
 
@@ -499,14 +499,14 @@ const Home = () => {
             { icon: <Bell size={22} />, title: 'Smart Bill Alerts', desc: 'Get gentle notifications for upcoming subscriptions and utility bills to avoid late fees.' },
             { icon: <Sparkles size={22} />, title: 'AI Spending Analysis', desc: 'Receive personalized recommendations and automated patterns alerts from the budget bot.' },
           ].map(({ icon, title, desc }, i) => (
-            <div key={i} className="feature-card bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:-translate-y-2 transition-all duration-300 text-left space-y-5 flex flex-col justify-between group cursor-default">
+            <div key={i} className="feature-card bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none hover:-translate-y-2 transition-all duration-300 text-left space-y-5 flex flex-col justify-between group cursor-default">
               <div className="space-y-5">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 group-hover:scale-110 group-hover:rotate-3">
                   {icon}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-black text-lg text-slate-900">{title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed font-medium">{desc}</p>
+                  <h3 className="font-black text-lg text-slate-900 dark:text-white">{title}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">{desc}</p>
                 </div>
               </div>
               <span className="text-xs font-bold text-blue-600 flex items-center gap-1.5 cursor-pointer pt-4 group-hover:gap-2.5 transition-all">
@@ -518,15 +518,15 @@ const Home = () => {
       </section>
 
       {/* ── INTERACTIVE SHOWCASE ── */}
-      <section id="showcase" className="py-24 px-6 bg-slate-50/50 border-y border-slate-100">
+      <section id="showcase" className="py-24 px-6 bg-slate-50/50 dark:bg-slate-950/10 border-y border-slate-100 dark:border-slate-800">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
           <FadeIn className="lg:col-span-5" direction="right">
             <div className="space-y-8 text-left">
               <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Live App Preview</div>
-                <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 leading-none">Interactive Dashboard</h2>
-                <p className="text-slate-500 font-medium">Click the tabs below to preview the intuitive interfaces that power BudgetMate.</p>
+                <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Live App Preview</div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white leading-none">Interactive Dashboard</h2>
+                <p className="text-slate-500 dark:text-slate-400 font-medium">Click the tabs below to preview the intuitive interfaces that power BudgetMate.</p>
               </div>
 
               <div className="flex flex-col gap-3">
@@ -542,7 +542,7 @@ const Home = () => {
                     className={`w-full py-4 px-6 rounded-2xl text-left font-black text-sm transition-all duration-200 cursor-pointer flex items-center justify-between border ${
                       activeTab === key
                         ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/25 border-transparent scale-[1.02]'
-                        : 'bg-white text-slate-700 hover:bg-slate-100 border-slate-200/50 hover:translate-x-1'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200/50 dark:border-slate-800 hover:translate-x-1'
                     }`}
                   >
                     <span className="flex items-center gap-3">{icon} {label}</span>
@@ -555,14 +555,14 @@ const Home = () => {
 
           {/* Tab Content Panel */}
           <FadeIn className="lg:col-span-7" direction="left" delay={120}>
-            <div className="bg-white rounded-3xl border border-slate-200/60 shadow-xl overflow-hidden min-h-[360px] p-8 flex flex-col justify-between relative transition-all duration-300">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-xl dark:shadow-none overflow-hidden min-h-[360px] p-8 flex flex-col justify-between relative transition-all duration-300">
               <div key={tabKey} className="tab-content-enter space-y-6">
 
                 {activeTab === 'wallet' && (
                   <>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-black text-xl text-slate-900">Your Wallets</h4>
-                      <span className="text-[10px] font-bold bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full">3 Accounts Connected</span>
+                      <h4 className="font-black text-xl text-slate-900 dark:text-white">Your Wallets</h4>
+                      <span className="text-[10px] font-bold bg-blue-50 dark:bg-blue-950/25 text-blue-600 px-2.5 py-1 rounded-full">3 Accounts Connected</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {[
@@ -585,8 +585,8 @@ const Home = () => {
                 {activeTab === 'analytics' && (
                   <>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-black text-xl text-slate-900">Monthly Spending Analytics</h4>
-                      <span className="text-[10px] font-bold text-red-500 bg-red-50 px-2.5 py-1 rounded-full flex items-center gap-1"><Activity size={10} /> Live</span>
+                      <h4 className="font-black text-xl text-slate-900 dark:text-white">Monthly Spending Analytics</h4>
+                      <span className="text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-950/20 px-2.5 py-1 rounded-full flex items-center gap-1"><Activity size={10} /> Live</span>
                     </div>
                     <div className="space-y-4">
                       {[
@@ -595,11 +595,11 @@ const Home = () => {
                         { label: 'Entertainment',      spent: '$140.00', limit: '$450', pct: 31, color: 'bg-amber-500' },
                       ].map(({ label, spent, limit, pct, color }, i) => (
                         <div key={i} style={{ animationDelay: `${i * 100}ms` }} className="tab-content-enter">
-                          <div className="flex justify-between text-xs font-bold text-slate-700 mb-1.5">
+                          <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                             <span>{label}</span>
                             <span>{spent} / {limit} ({pct}%)</span>
                           </div>
-                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                          <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
                             <div className={`${color} h-full rounded-full hero-bar`} style={{ width: `${pct}%` }}></div>
                           </div>
                         </div>
@@ -611,22 +611,22 @@ const Home = () => {
                 {activeTab === 'investments' && (
                   <>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-black text-xl text-slate-900">Portfolio Performance</h4>
-                      <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2.5 py-1 rounded-full">+18.4% Return</span>
+                      <h4 className="font-black text-xl text-slate-900 dark:text-white">Portfolio Performance</h4>
+                      <span className="text-[10px] font-bold text-green-600 bg-green-50 dark:bg-green-950/20 px-2.5 py-1 rounded-full">+18.4% Return</span>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-slate-100 dark:divide-slate-800">
                       {[
                         { name: 'S&P 500 Index Fund (VOO)', shares: '42.5 shares', value: '$18,062.50', pct: '+11.2%' },
                         { name: 'Bitcoin Core (BTC)', shares: '0.15 BTC', value: '$10,050.00', pct: '+42.1%' },
                       ].map(({ name, shares, value, pct }, i) => (
                         <div key={i} style={{ animationDelay: `${i * 100}ms` }}
-                          className="tab-content-enter flex justify-between items-center py-3 hover:bg-slate-50/50 -mx-2 px-2 rounded-xl transition-colors">
+                          className="tab-content-enter flex justify-between items-center py-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 -mx-2 px-2 rounded-xl transition-colors">
                           <div>
-                            <p className="text-sm font-bold text-slate-900">{name}</p>
+                            <p className="text-sm font-bold text-slate-900 dark:text-white">{name}</p>
                             <p className="text-[10px] text-slate-400 font-semibold">{shares}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-black text-slate-900">{value}</p>
+                            <p className="text-sm font-black text-slate-900 dark:text-white">{value}</p>
                             <p className="text-[10px] text-green-500 font-bold flex items-center justify-end gap-0.5"><ArrowUpRight size={10} /> {pct}</p>
                           </div>
                         </div>
@@ -638,8 +638,8 @@ const Home = () => {
                 {activeTab === 'bills' && (
                   <>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-black text-xl text-slate-900">Upcoming Bills</h4>
-                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Calendar Integration</span>
+                      <h4 className="font-black text-xl text-slate-900 dark:text-white">Upcoming Bills</h4>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/20 px-2.5 py-1 rounded-full">Calendar Integration</span>
                     </div>
                     <div className="space-y-3">
                       {[
@@ -647,17 +647,17 @@ const Home = () => {
                         { urgent: false, name: 'Electric Grid Utility', sub: 'Due June 24 - Bill', amount: '$142.00' },
                       ].map(({ urgent, name, sub, amount }, i) => (
                         <div key={i} style={{ animationDelay: `${i * 100}ms` }}
-                          className={`tab-content-enter flex justify-between items-center p-3 rounded-xl border transition-all hover:scale-[1.01] ${urgent ? 'border-red-100 bg-red-50/50' : 'border-slate-100 bg-slate-50/30'}`}>
+                          className={`tab-content-enter flex justify-between items-center p-3 rounded-xl border transition-all hover:scale-[1.01] ${urgent ? 'border-red-100 dark:border-red-950/30 bg-red-50/50 dark:bg-red-950/10' : 'border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30'}`}>
                           <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${urgent ? 'bg-red-100 text-red-500' : 'bg-blue-50 text-blue-500'}`}>
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${urgent ? 'bg-red-100 dark:bg-red-900/20 text-red-500' : 'bg-blue-50 dark:bg-blue-950/20 text-blue-500'}`}>
                               <Calendar size={14} />
                             </div>
                             <div>
-                              <p className="text-xs font-bold text-slate-800">{name}</p>
+                              <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{name}</p>
                               <p className={`text-[9px] font-semibold ${urgent ? 'text-red-400' : 'text-slate-400'}`}>{sub}</p>
                             </div>
                           </div>
-                          <span className={`text-xs font-black ${urgent ? 'text-red-600' : 'text-slate-900'}`}>{amount}</span>
+                          <span className={`text-xs font-black ${urgent ? 'text-red-600' : 'text-slate-900 dark:text-white'}`}>{amount}</span>
                         </div>
                       ))}
                     </div>
@@ -665,7 +665,7 @@ const Home = () => {
                 )}
               </div>
 
-              <div className="mt-8 pt-4 border-t border-slate-100 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                 <span>Secure Server Session</span>
                 <span className="flex items-center gap-1 text-green-500"><Shield size={12} /> SSL Encrypted</span>
               </div>
@@ -678,38 +678,38 @@ const Home = () => {
       <section id="how-it-works" className="py-24 px-6 max-w-6xl mx-auto text-center space-y-16">
         <FadeIn direction="up">
           <div className="space-y-4 max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Getting Started</div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">Set up your dashboard in three simple steps</h2>
-            <p className="text-slate-500 font-medium">BudgetMate links with your habits immediately, automating your entries and optimizing allocations.</p>
+            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Getting Started</div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Set up your dashboard in three simple steps</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">BudgetMate links with your habits immediately, automating your entries and optimizing allocations.</p>
           </div>
         </FadeIn>
 
         <StaggerParent className="grid grid-cols-1 md:grid-cols-3 gap-12 relative" stagger={160}>
-          <div className="hidden md:block absolute top-[25%] left-[20%] right-[20%] h-0.5 border-t border-dashed border-slate-200 -z-10"></div>
+          <div className="hidden md:block absolute top-[25%] left-[20%] right-[20%] h-0.5 border-t border-dashed border-slate-200 dark:border-slate-800 -z-10"></div>
           {[
             { n: 1, title: 'Create Account', desc: 'Register securely in seconds using your email address. No credit card required.' },
             { n: 2, title: 'Set Up Wallets', desc: 'Create digital wallets for your bank, cash, or credit accounts to group your assets together.' },
             { n: 3, title: 'Track & Grow', desc: 'Enter transactions, monitor bill calendars, and see automatic savings statistics build up.' },
           ].map(({ n, title, desc }) => (
             <div key={n} className="space-y-4 text-center group">
-              <div className="w-16 h-16 rounded-full bg-blue-50 border-2 border-blue-600/10 text-blue-600 mx-auto flex items-center justify-center font-black text-xl shadow-md group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
+              <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-600/10 dark:border-blue-900/30 text-blue-600 mx-auto flex items-center justify-center font-black text-xl shadow-md group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 transition-all duration-300">
                 {n}
               </div>
-              <h3 className="font-black text-lg text-slate-900">{title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto font-medium">{desc}</p>
+              <h3 className="font-black text-lg text-slate-900 dark:text-white">{title}</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs mx-auto font-medium">{desc}</p>
             </div>
           ))}
         </StaggerParent>
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="py-24 px-6 bg-white border-y border-slate-100">
+      <section className="py-24 px-6 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
         <div className="max-w-6xl mx-auto text-center space-y-16">
           <FadeIn direction="up">
             <div className="space-y-4 max-w-2xl mx-auto">
-              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Reviews</div>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">Approved by wealth builders</h2>
-              <p className="text-slate-500 font-medium">Here is how BudgetMate is helping people eliminate subscription leakages and accumulate wealth.</p>
+              <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Reviews</div>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Approved by wealth builders</h2>
+              <p className="text-slate-500 dark:text-slate-400 font-medium">Here is how BudgetMate is helping people eliminate subscription leakages and accumulate wealth.</p>
             </div>
           </FadeIn>
 
@@ -719,15 +719,15 @@ const Home = () => {
               { init: 'SR', color: 'indigo', name: 'Sarah Reynolds', role: 'Marketing Analyst', quote: '"මම AI අයවැයකරණය ගැන මුලින් සැක පළ කළත්, මාස 6ක් තිස්සේ මම භාවිතා නොකරපු සබ්ස්ක්‍රිප්ෂන් සේවා දෙකක් හඳුනාගන්න මේ මෙවලම සමත් වුණා. මගේ පළමු දවසෙම මට මසකට ඩොලර් 40ක් ඉතිරි කරගන්න පුළුවන් වුණා!"' },
               { init: 'MK', color: 'slate', name: 'Marcus Kaelen', role: 'Small Business Owner', quote: '"එකම මුදල් ඒකක දළ විශ්ලේෂණයක් යටතේ බැංකු ගිණුම්, අතේ ඇති මුදල් සහ කොටස් වෙළඳපල ආයෝජන සියල්ල නිරීක්ෂණය කිරීමට හැකිවීම මඟින් සෑම සතියකම මගේ ගණනය කිරීම් සඳහා වැයවන කාලය පැය ගණනාවකින් ඉතිරි කර දෙනවා."' },
             ].map(({ init, color, name, role, quote }, i) => (
-              <div key={i} className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100 text-left space-y-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default">
+              <div key={i} className="bg-slate-50/50 dark:bg-slate-950/30 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 text-left space-y-6 flex flex-col justify-between hover:shadow-xl dark:hover:shadow-none hover:-translate-y-1 transition-all duration-300 cursor-default">
                 <div className="flex gap-1 text-amber-400">
                   {[...Array(5)].map((_, s) => <Star key={s} size={16} fill="currentColor" />)}
                 </div>
-                <p className="text-slate-600 font-medium text-sm leading-relaxed">{quote}</p>
+                <p className="text-slate-600 dark:text-slate-300 font-medium text-sm leading-relaxed">{quote}</p>
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-full bg-${color}-100 flex items-center justify-center font-bold text-xs text-${color}-600`}>{init}</div>
                   <div>
-                    <p className="text-xs font-black text-slate-900">{name}</p>
+                    <p className="text-xs font-black text-slate-900 dark:text-white">{name}</p>
                     <p className="text-[10px] text-slate-400 font-bold">{role}</p>
                   </div>
                 </div>
@@ -741,9 +741,9 @@ const Home = () => {
       <section id="faqs" className="py-24 px-6 max-w-4xl mx-auto space-y-16">
         <FadeIn direction="up">
           <div className="space-y-4 text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">FAQ</div>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">Frequently Asked Questions</h2>
-            <p className="text-slate-500 font-medium max-w-xl mx-auto">Got questions about BudgetMate? We have responses to help you understand safety, setup, and features.</p>
+            <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 text-blue-600 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">FAQ</div>
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mx-auto">Got questions about BudgetMate? We have responses to help you understand safety, setup, and features.</p>
           </div>
         </FadeIn>
 
@@ -754,10 +754,10 @@ const Home = () => {
             { q: "Is my financial data secure with BudgetMate?", a: "Absolutely. We secure all communication streams using industry-standard SSL encryption protocols. BudgetMate operates strictly on local token authorization and never exposes your information." },
             { q: "Can I manage multiple accounts in different categories?", a: "Yes. In the dashboard, you can define unique wallets representing checking accounts, savings vaults, physical cash, or investment portfolios, and filter recent activities by specific accounts." },
           ].map((faq, idx) => (
-            <div key={idx} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:border-blue-100 transition-colors duration-200">
+            <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden hover:border-blue-100 dark:hover:border-blue-900 transition-colors duration-200">
               <button
                 onClick={() => toggleFaq(idx)}
-                className="w-full py-5 px-6 font-bold text-left text-slate-800 flex justify-between items-center hover:bg-slate-50/50 cursor-pointer transition-colors"
+                className="w-full py-5 px-6 font-bold text-left text-slate-800 dark:text-slate-200 flex justify-between items-center hover:bg-slate-50/50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
               >
                 <span>{faq.q}</span>
                 <ChevronDown size={18} className={`text-slate-400 transition-transform duration-300 ${activeFaq === idx ? 'rotate-180 text-blue-600' : ''}`} />
@@ -770,7 +770,7 @@ const Home = () => {
                   transition: 'max-height 0.35s ease, opacity 0.25s ease',
                 }}
               >
-                <div className="px-6 pb-5 text-sm text-slate-500 leading-relaxed font-medium border-t border-slate-50 pt-4">
+                <div className="px-6 pb-5 text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium border-t border-slate-50 dark:border-slate-800 pt-4">
                   {faq.a}
                 </div>
               </div>

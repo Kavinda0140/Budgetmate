@@ -244,14 +244,14 @@ const MyWallet = () => {
     <DashboardLayout title="My Wallet">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
-        {/* ── Left ──────────────────────────────────────────────────────────── */}
+        {/* -- Left ------------------------------------------------------------ */}
         <div className="lg:col-span-2 space-y-10">
 
           {/* visual card row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-700">
             {loading ? (
-              <div className="h-64 bg-slate-100 rounded-[3rem] flex items-center justify-center">
-                <Loader2 className="animate-spin text-slate-400" size={32} />
+              <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-[3rem] flex items-center justify-center">
+                <Loader2 className="animate-spin text-slate-400 dark:text-slate-500" size={32} />
               </div>
             ) : selected ? (
               <div className="relative group/card">
@@ -272,16 +272,16 @@ const MyWallet = () => {
                 </button>
               </div>
             ) : (
-              <div className="h-64 bg-slate-100 rounded-[3rem] flex items-center justify-center text-slate-400 text-sm font-medium">
+              <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-[3rem] flex items-center justify-center text-slate-400 dark:text-slate-500 text-sm font-medium">
                 No accounts yet
               </div>
             )}
 
             <div
               onClick={openAdd}
-              className="border-2 border-dashed border-slate-200 rounded-[2.5rem] flex flex-col items-center justify-center p-10 text-slate-400 hover:border-blue-400 hover:text-blue-600 transition-all cursor-pointer group bg-slate-50/30"
+              className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[2.5rem] flex flex-col items-center justify-center p-10 text-slate-400 dark:text-slate-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-450 transition-all cursor-pointer group bg-slate-50/30 dark:bg-slate-800/10"
             >
-              <div className="p-4 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform mb-4">
+              <div className="p-4 bg-white dark:bg-slate-800 rounded-full shadow-sm group-hover:scale-110 transition-transform mb-4">
                 <Plus size={32} />
               </div>
               <p className="font-black text-[10px] uppercase tracking-[0.2em]">Add New Card</p>
@@ -289,32 +289,32 @@ const MyWallet = () => {
           </div>
 
           {/* linked accounts list */}
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-xl font-black text-slate-900">Linked Accounts</h3>
-              <button onClick={openAdd} className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
+              <h3 className="text-xl font-black text-slate-900 dark:text-white">Linked Accounts</h3>
+              <button onClick={openAdd} className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:gap-3 transition-all">
                 <Plus size={16} /> Add Account
               </button>
             </div>
 
             {loading && (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="animate-spin text-slate-300" size={28} />
+                <Loader2 className="animate-spin text-slate-300 dark:text-slate-650" size={28} />
               </div>
             )}
 
             {!loading && error && (
               <div className="text-center py-10">
                 <p className="text-red-400 text-sm font-medium mb-4">{error}</p>
-                <button onClick={fetchAccounts} className="text-blue-600 text-xs font-black uppercase tracking-widest hover:underline">Retry</button>
+                <button onClick={fetchAccounts} className="text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest hover:underline">Retry</button>
               </div>
             )}
 
             {!loading && !error && accounts.length === 0 && (
-              <div className="text-center py-12 text-slate-400">
+              <div className="text-center py-12 text-slate-400 dark:text-slate-500">
                 <Wallet size={40} className="mx-auto mb-4 opacity-30" />
                 <p className="text-sm font-medium">No accounts linked yet.</p>
-                <button onClick={openAdd} className="mt-4 text-blue-600 font-black text-[10px] uppercase tracking-widest hover:underline">
+                <button onClick={openAdd} className="mt-4 text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-widest hover:underline">
                   Add your first account
                 </button>
               </div>
@@ -328,8 +328,8 @@ const MyWallet = () => {
                     onClick={() => setSelectedAcc(i)}
                     className={`flex items-center justify-between p-6 rounded-[2rem] border transition-all cursor-pointer group ${
                       selectedAcc === i
-                        ? "border-blue-600 bg-blue-50/30 shadow-lg shadow-blue-50"
-                        : "border-slate-50 hover:border-slate-200 bg-white"
+                        ? "border-blue-600 bg-blue-50/30 dark:bg-blue-950/20 shadow-lg shadow-blue-50/5"
+                        : "border-slate-50 dark:border-slate-850 hover:border-slate-200 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                     }`}
                   >
                     <div className="flex items-center gap-4">
@@ -337,12 +337,12 @@ const MyWallet = () => {
                         <Landmark size={20} />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900">{acc.account_name}</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{acc.account_name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{acc.account_type}</p>
+                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest">{acc.account_type}</p>
                           {acc.card_network && (
-                            <span className="text-[9px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 px-2 py-0.5 rounded-lg">
-                              {acc.card_network} · {acc.card_type}
+                            <span className="text-[9px] font-black uppercase tracking-widest bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-lg">
+                              {acc.card_network} . {acc.card_type}
                             </span>
                           )}
                         </div>
@@ -350,22 +350,22 @@ const MyWallet = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="font-black text-slate-900">
+                        <p className="font-black text-slate-900 dark:text-white">
                           ${parseFloat(acc.balance).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </p>
-                        <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${selectedAcc === i ? "text-blue-600" : "text-green-500"}`}>
+                        <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${selectedAcc === i ? "text-blue-600 dark:text-blue-400" : "text-green-500"}`}>
                           {selectedAcc === i ? "Selected" : "Active"}
                         </p>
                       </div>
                       <button
                         onClick={(e) => openEdit(e, acc)}
-                        className="p-2 rounded-xl text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100"
+                        className="p-2 rounded-xl text-slate-300 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all opacity-0 group-hover:opacity-100"
                       >
                         <Pencil size={15} />
                       </button>
                       <button
                         onClick={(e) => handleDelete(e, acc.id)}
-                        className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                        className="p-2 rounded-xl text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all opacity-0 group-hover:opacity-100"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -377,7 +377,7 @@ const MyWallet = () => {
           </div>
         </div>
 
-        {/* ── Right ─────────────────────────────────────────────────────────── */}
+        {/* -- Right ----------------------------------------------------------- */}
         <div className="space-y-8">
           <div className="bg-[#0A1128] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
             <p className="text-blue-300 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">Net Worth</p>
@@ -394,33 +394,33 @@ const MyWallet = () => {
             <Wallet size={120} className="absolute bottom-[-30px] right-[-30px] text-white/5 rotate-12" />
           </div>
 
-          <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm text-center relative overflow-hidden group">
-            <div className="w-20 h-20 bg-blue-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
-              <Wallet className="text-blue-600" size={32} />
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm text-center relative overflow-hidden group">
+            <div className="w-20 h-20 bg-blue-50 dark:bg-blue-950/30 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform">
+              <Wallet className="text-blue-600 dark:text-blue-400" size={32} />
             </div>
-            <h4 className="font-black text-slate-900 mb-3 tracking-tight">Savings Optimization</h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-medium">
-              Switching your <span className="text-blue-600 font-bold">{selected?.account_name || "primary"}</span> funds to a High-Yield account could earn you <span className="font-bold text-slate-900">$45/mo</span> extra.
+            <h4 className="font-black text-slate-900 dark:text-white mb-3 tracking-tight">Savings Optimization</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+              Switching your <span className="text-blue-600 dark:text-blue-400 font-bold">{selected?.account_name || "primary"}</span> funds to a High-Yield account could earn you <span className="font-bold text-slate-900 dark:text-white">$45/mo</span> extra.
             </p>
-            <button className="mt-8 w-full py-4 bg-slate-50 hover:bg-[#0A1128] hover:text-white text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+            <button className="mt-8 w-full py-4 bg-slate-50 dark:bg-slate-800 hover:bg-[#0A1128] dark:hover:bg-[#0A1128] hover:text-white dark:hover:text-white text-slate-600 dark:text-slate-350 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
               Explore Options
             </button>
           </div>
         </div>
       </div>
 
-      {/* ── Add / Edit Modal ──────────────────────────────────────────────────── */}
+      {/* -- Add / Edit Modal ---------------------------------------------------- */}
       {modalMode && (
         <div className="fixed inset-0 bg-[#0A1128]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative max-h-[90vh] overflow-y-auto">
-            <button onClick={closeModal} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 transition-colors">
+          <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-slate-800 rounded-[3rem] p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300 relative max-h-[90vh] overflow-y-auto">
+            <button onClick={closeModal} className="absolute top-8 right-8 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
               <X size={24} />
             </button>
 
-            <h3 className="text-2xl font-black text-slate-900 mb-2">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
               {isEdit ? "Edit Account" : "Add New Card"}
             </h3>
-            <p className="text-sm text-slate-400 font-medium mb-8">
+            <p className="text-sm text-slate-400 dark:text-slate-500 font-medium mb-8">
               {isEdit ? "Update your account details below." : "Link your account to BudgetMate."}
             </p>
 
@@ -428,7 +428,7 @@ const MyWallet = () => {
 
               {/* Card Holder Name */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                   Card Holder Name
                 </label>
                 <input
@@ -436,50 +436,50 @@ const MyWallet = () => {
                   placeholder={loggedInName}
                   value={form.card_name}
                   onChange={e => setForm({ ...form, card_name: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
-                <p className="text-[10px] text-slate-400 ml-1">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 ml-1">
                   Leave blank to use your account name ({loggedInName})
                 </p>
               </div>
 
               {/* Account Name */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Account Name</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Account Name</label>
                 <input
                   type="text" required placeholder="e.g. Chase Bank"
                   value={form.account_name}
                   onChange={e => setForm({ ...form, account_name: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               {/* Account Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Account Type</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Account Type</label>
                 <select
                   value={form.account_type}
                   onChange={e => setForm({ ...form, account_type: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 >
-                  {accountTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                  {accountTypes.map(t => <option key={t} value={t} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{t}</option>)}
                 </select>
               </div>
 
               {/* Balance */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Current Balance ($)</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Current Balance ($)</label>
                 <input
                   type="number" step="0.01" min="0" placeholder="0.00"
                   value={form.balance}
                   onChange={e => setForm({ ...form, balance: e.target.value })}
-                  className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                  className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                 />
               </div>
 
               {/* Card Network */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Card Network</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Card Network</label>
                 <div className="flex gap-3">
                   {networkTypes.map(n => (
                     <button
@@ -487,8 +487,8 @@ const MyWallet = () => {
                       onClick={() => handleNetworkChange(n)}
                       className={`flex-1 py-3 rounded-2xl border text-xs font-black uppercase tracking-widest transition-all ${
                         form.card_network === n
-                          ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
-                          : "bg-slate-50 text-slate-400 border-slate-100 hover:border-slate-300"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-900/30"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-550 border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                       }`}
                     >
                       {n}
@@ -499,7 +499,7 @@ const MyWallet = () => {
 
               {/* Card Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Card Type</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Card Type</label>
                 <div className="flex gap-3">
                   {cardTypes.map(t => (
                     <button
@@ -507,8 +507,8 @@ const MyWallet = () => {
                       onClick={() => setForm({ ...form, card_type: t })}
                       className={`flex-1 py-3 rounded-2xl border text-xs font-black uppercase tracking-widest transition-all ${
                         form.card_type === t
-                          ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100"
-                          : "bg-slate-50 text-slate-400 border-slate-100 hover:border-slate-300"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-900/30"
+                          : "bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-550 border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                       }`}
                     >
                       {t}
@@ -519,7 +519,7 @@ const MyWallet = () => {
 
               {/* Card Number */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Card Number</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Card Number</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -528,10 +528,10 @@ const MyWallet = () => {
                     value={form.card_number}
                     maxLength={form.card_network === "Amex" ? 17 : 19}
                     onChange={handleCardNumberChange}
-                    className="w-full px-6 py-4 pr-14 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 tracking-widest focus:outline-none focus:border-blue-600 transition-all"
+                    className="w-full px-6 py-4 pr-14 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white tracking-widest focus:outline-none focus:border-blue-600 transition-all"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2">
-                    <CreditCard size={18} className="text-slate-300" />
+                    <CreditCard size={18} className="text-slate-300 dark:text-slate-605" />
                   </div>
                 </div>
               </div>
@@ -539,7 +539,7 @@ const MyWallet = () => {
               {/* Expiry + CVV */}
               <div className="flex gap-4">
                 <div className="flex-1 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Expiry Date</label>
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Expiry Date</label>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -547,8 +547,8 @@ const MyWallet = () => {
                     maxLength={5}
                     value={form.expiry_date}
                     onChange={handleExpiryChange}
-                    className={`w-full px-6 py-4 bg-slate-50 border rounded-2xl text-sm font-bold text-slate-900 focus:outline-none transition-all ${
-                      expiryError ? "border-red-400 focus:border-red-500" : "border-slate-100 focus:border-blue-600"
+                    className={`w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none transition-all ${
+                      expiryError ? "border-red-400 focus:border-red-500" : "border-slate-100 dark:border-slate-700 focus:border-blue-600"
                     }`}
                   />
                   {expiryError && (
@@ -556,24 +556,24 @@ const MyWallet = () => {
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
                     {form.card_network === "Amex" ? "CID (4 digits)" : "CVV (3 digits)"}
                   </label>
                   <input
                     type="password"
                     inputMode="numeric"
-                    placeholder={form.card_network === "Amex" ? "••••" : "•••"}
+                    placeholder={form.card_network === "Amex" ? "****" : "***"}
                     maxLength={cvvLength(form.card_network)}
                     value={form.cvv}
                     onChange={handleCvvChange}
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-600 transition-all"
+                    className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 transition-all"
                   />
                 </div>
               </div>
 
               {/* Card Color */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Card Color</label>
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Card Color</label>
                 <div className="flex gap-3">
                   {colorOptions.map(c => (
                     <button
@@ -581,7 +581,7 @@ const MyWallet = () => {
                       onClick={() => setForm({ ...form, color_theme: c.value })}
                       className={`w-10 h-10 rounded-2xl ${c.value} transition-all ${
                         form.color_theme === c.value
-                          ? "ring-2 ring-offset-2 ring-blue-600 scale-110"
+                          ? "ring-2 ring-offset-2 dark:ring-offset-slate-900 ring-blue-600 scale-110"
                           : "opacity-60 hover:opacity-100"
                       }`}
                     />
@@ -625,7 +625,7 @@ const MyWallet = () => {
   );
 };
 
-// ─── Visual Card ──────────────────────────────────────────────────────────────
+// --- Visual Card --------------------------------------------------------------
 const VisualCard = ({ name, number, exp, network = "Visa", cardType = "Debit", balance, color, compact = false }) => {
   const displayNumber = number
     ? number
@@ -685,7 +685,7 @@ const VisualCard = ({ name, number, exp, network = "Visa", cardType = "Debit", b
   );
 };
 
-// ─── Summary Item ─────────────────────────────────────────────────────────────
+// --- Summary Item -------------------------------------------------------------
 const SummaryItem = ({ label, amount, up }) => (
   <div className="flex justify-between items-center bg-white/5 p-5 rounded-[1.5rem] border border-white/10 hover:bg-white/10 transition-colors">
     <span className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">{label}</span>

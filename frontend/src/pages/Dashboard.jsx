@@ -137,30 +137,30 @@ const Dashboard = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-blue-50 rounded-2xl text-blue-600"><Wallet size={20} /></div>
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-2xl text-blue-600"><Wallet size={20} /></div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Spend</p>
             </div>
-            <h3 className="text-2xl font-black text-slate-900">{formatCurrency(monthlySpend)}</h3>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{formatCurrency(monthlySpend)}</h3>
             <p className="text-xs font-bold text-slate-400 mt-2">Current month expenses</p>
           </div>
 
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-green-50 rounded-2xl text-green-600"><Target size={20} /></div>
+              <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-2xl text-green-600"><Target size={20} /></div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Savings Rate</p>
             </div>
-            <h3 className="text-2xl font-black text-slate-900">{savingsRate}%</h3>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{savingsRate}%</h3>
             <p className="text-xs font-bold text-slate-400 mt-2 italic">Saved {formatCurrency(savingsAmount)}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
           <div className="flex justify-between items-center mb-8">
-            <h4 className="text-xl font-black text-slate-900">Recent Transactions</h4>
+            <h4 className="text-xl font-black text-slate-900 dark:text-white">Recent Transactions</h4>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -177,24 +177,24 @@ const Dashboard = () => {
               <p className="text-slate-400 text-sm py-4 text-center font-medium">No recent transactions found.</p>
             ) : (
               transactions.slice(0, 4).map((tx) => (
-                <div key={tx.id} className="flex items-center justify-between group cursor-pointer">
+                <div key={tx.id} className="flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-800/30 -mx-4 px-4 py-2 rounded-2xl transition-colors">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
                       tx.transaction_type === 'INCOME'
-                        ? 'bg-green-50 text-green-600 group-hover:bg-green-100'
-                        : 'bg-slate-50 text-slate-400 group-hover:bg-red-50 group-hover:text-red-500'
+                        ? 'bg-green-50 dark:bg-green-950/20 text-green-600 group-hover:bg-green-100 dark:group-hover:bg-green-900/30'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:bg-red-50 dark:group-hover:bg-red-950/20 group-hover:text-red-500'
                     }`}
                     >
                       {tx.transaction_type === 'INCOME' ? <ArrowDownRight size={20} /> : <ArrowUpRight size={20} />}
                     </div>
                     <div>
-                      <p className="font-bold text-slate-900">{tx.title}</p>
-                      <p className="text-xs text-slate-400 font-medium">
+                      <p className="font-bold text-slate-900 dark:text-white">{tx.title}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
                         {new Date(tx.transaction_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {tx.category}
                       </p>
                     </div>
                   </div>
-                  <p className={`font-black ${tx.transaction_type === 'INCOME' ? 'text-green-600' : 'text-slate-900'}`}>
+                  <p className={`font-black ${tx.transaction_type === 'INCOME' ? 'text-green-600' : 'text-slate-900 dark:text-white'}`}>
                     {tx.transaction_type === 'INCOME' ? `+${formatCurrency(tx.amount)}` : `-${formatCurrency(tx.amount)}`}
                   </p>
                 </div>
@@ -203,7 +203,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-xl shadow-blue-100">
+        <div className="bg-blue-600 rounded-[2.5rem] p-10 text-white shadow-xl shadow-blue-100 dark:shadow-none">
           <h4 className="text-xl font-bold mb-6">Investment Opportunity</h4>
           <p className="text-blue-100 text-sm leading-relaxed mb-8 font-medium">
             Based on your savings goals, we've identified an ETF that matches your risk profile.
@@ -216,8 +216,8 @@ const Dashboard = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity">
-          <div className="bg-white w-full max-w-md p-8 rounded-[2rem] shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-2xl font-black text-slate-900 mb-6">New Transaction</h3>
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6">New Transaction</h3>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
@@ -225,7 +225,7 @@ const Dashboard = () => {
                 <select
                   value={formData.account_id}
                   onChange={(e) => setFormData({ ...formData, account_id: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-bold text-slate-800 transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 outline-none font-bold text-slate-800 dark:text-slate-200 transition-all"
                 >
                   {accounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -243,7 +243,7 @@ const Dashboard = () => {
                   placeholder="e.g. Internet Bill / Monthly Salary"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-medium transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 outline-none font-medium text-slate-850 dark:text-slate-200 transition-all animate-none"
                 />
               </div>
 
@@ -257,7 +257,7 @@ const Dashboard = () => {
                     placeholder="0.00"
                     value={formData.amount}
                     onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-medium transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 outline-none font-medium text-slate-850 dark:text-slate-200 transition-all"
                   />
                 </div>
                 <div>
@@ -265,7 +265,7 @@ const Dashboard = () => {
                   <select
                     value={formData.transaction_type}
                     onChange={(e) => setFormData({ ...formData, transaction_type: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-bold transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 outline-none font-bold text-slate-800 dark:text-slate-200 transition-all"
                   >
                     <option value="EXPENSE">Expense</option>
                     <option value="INCOME">Income</option>
@@ -281,7 +281,7 @@ const Dashboard = () => {
                   placeholder="e.g. Food, Transport, Salary"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none font-medium transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 outline-none font-medium text-slate-850 dark:text-slate-200 transition-all"
                 />
               </div>
 
@@ -289,7 +289,7 @@ const Dashboard = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl text-sm transition-colors"
+                  className="w-1/2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-350 font-bold py-4 rounded-2xl text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
