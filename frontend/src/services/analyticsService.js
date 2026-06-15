@@ -35,3 +35,11 @@ export const exportAnalyticsPDF = async () => {
   link.remove();
   window.URL.revokeObjectURL(url);
 };
+
+/**
+ * Fetches top 5 expense categories with percentage share (last 30 days).
+ */
+export const fetchTopCategories = async () => {
+  const response = await API.get('/analytics/top-categories');
+  return response.data;
+};

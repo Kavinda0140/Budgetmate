@@ -189,6 +189,47 @@ def get_transactions_for_pdf(user_id: int) -> dict:
             conn.close()
 
 
+def get_top_categories(user_id: int) -> dict:
+    """
+    Returns top 5 expense categories with % of total spend (last 30 days).
+    """
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return {"categories": []}
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT category,
+                   SUM(amount) AS total,
+                   ROUND(SUM(amount) / NULLIF(SUM(SUM(amount)) OVER (), 0) * 100, 1) AS pct
+            FROM transactions
+            WHERE user_id = :uid
+              AND transaction_type = 'EXPENSE'
+              AND transaction_date >= TRUNC(SYSDATE) - 30
+            GROUP BY category
+            ORDER BY total DESC
+            FETCH FIRST 5 ROWS ONLY
+        """, uid=user_id)
+        rows = cursor.fetchall()
+
+        PIE_COLORS = ['#0A1128','#2563eb','#60a5fa','#bfdbfe','#93c5fd']
+        return {
+            "categories": [
+                {"name": r[0], "total": float(r[1]), "pct": float(r[2]), "color": PIE_COLORS[i]}
+                for i, r in enumerate(rows)
+            ]
+        }
+    except Exception as e:
+        print(f"[Analytics] Error fetching top categories: {e}")
+        return {"categories": []}
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+
 def _empty_response():
     return {
         "period": "",

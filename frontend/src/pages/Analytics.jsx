@@ -7,7 +7,7 @@ import {
   ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line,
 } from 'recharts';
 import { Filter, Download, ArrowUpRight, Sparkles, ChevronDown, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
-import { fetchAnalyticsSummary, exportAnalyticsPDF } from '../services/analyticsService';
+import { fetchAnalyticsSummary, exportAnalyticsPDF, fetchTopCategories } from '../services/analyticsService';
 
 const PERIOD_MAP = { '30': 'daily', '90': 'weekly', 'year': 'monthly' };
 
@@ -60,6 +60,9 @@ const Analytics = () => {
         // Build category list from pie data
         const cats = ['All', ...(result.pie_data || []).map((d) => d.name)];
         setCategories(cats);
+        // Fetch top categories
+        const topCats = await fetchTopCategories();
+        setTopCategories(topCats.categories || []);
         setSelectedCategory('All'); // reset filter on period change
       } catch (err) {
         console.error('[Analytics] Fetch failed:', err);
@@ -90,6 +93,7 @@ const Analytics = () => {
 
   // ── Savings trend label ──────────────────────────────────────────────────
   const savingsPositive = summary.net_savings >= 0;
+  const [topCategories, setTopCategories] = useState([]);
 
   return (
     <DashboardLayout title="Detailed Analytics">
@@ -163,10 +167,19 @@ const Analytics = () => {
       )}
 
       {/* ── Summary Cards ───────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+  
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
         <SummaryCard label="Total Income"   value={fmt(summary.total_income)}  icon={TrendingUp}   color="bg-green-500" />
         <SummaryCard label="Total Expenses" value={fmt(summary.total_expense)} icon={TrendingDown}  color="bg-red-500" />
         <SummaryCard label="Net Savings"    value={fmt(summary.net_savings)}   icon={Wallet}        color={savingsPositive ? 'bg-blue-600' : 'bg-orange-500'} />
+        <SummaryCard
+          label="Savings Rate"
+          value={summary.total_income > 0
+           ? `${((summary.net_savings / summary.total_income) * 100).toFixed(1)}%`
+           : '—'}
+          icon={ArrowUpRight}
+          color={savingsPositive ? 'bg-purple-500' : 'bg-slate-400'}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -259,19 +272,19 @@ const Analytics = () => {
               </div>
               <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                 {pieData.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex justify-between items-center p-3 rounded-2xl transition-all ${
-                      selectedCategory === item.name ? 'bg-blue-50 border border-blue-100' : 'hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                      <span className="text-xs font-bold text-slate-600 truncate max-w-[100px]">{item.name}</span>
-                    </div>
-                    <span className="text-xs font-black text-slate-900">{fmt(item.value)}</span>
-                  </div>
-                ))}
+                 <div key={i} className={`flex justify-between items-center p-3 rounded-2xl transition-all ${
+                   selectedCategory === item.name ? 'bg-blue-50 border border-blue-100' : 'hover:bg-slate-50'
+                 }`}>
+                   <div className="flex items-center gap-3">
+                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                     <span className="text-xs font-bold text-slate-600 truncate max-w-[100px]">{item.name}</span>
+                     {i === 0 && (
+                       <span className="text-[9px] font-black bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full uppercase tracking-wider">Top</span>
+                       )}
+                     </div>
+                     <span className="text-xs font-black text-slate-900">{fmt(item.value)}</span>
+                 </div>
+                 ))}
               </div>
             </>
           )}
@@ -316,6 +329,39 @@ const Analytics = () => {
             )}
           </div>
         </div>
+
+
+         {/* ── Top Categories Progress Bars ─────────────────────────────── */}
+         <div className="lg:col-span-1 bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
+           <h4 className="text-xl font-black text-slate-900 mb-6">Top Categories</h4>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-5">Last 30 days</p>
+           {isLoading ? (
+             <div className="h-40 flex items-center justify-center">
+               <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+             </div>
+           ) : topCategories.length === 0 ? (
+             <div className="text-xs font-bold text-slate-300">No expense data.</div>
+           ) : (
+             <div className="space-y-4">
+               {topCategories.map((cat, i) => (
+                 <div key={i}>
+                   <div className="flex justify-between items-center mb-1">
+                     <span className="text-xs font-bold text-slate-600 truncate max-w-[120px]">{cat.name}</span>
+                     <span className="text-xs font-black text-slate-900">{cat.pct}%</span>
+                   </div>
+                   <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                     <div
+                       className="h-2 rounded-full transition-all duration-700"
+                       style={{ width: `${cat.pct}%`, backgroundColor: cat.color }}
+                     />
+                   </div>
+                   <p className="text-[10px] text-slate-400 mt-0.5 font-semibold">{fmt(cat.total)}</p>
+                 </div>
+                ))}
+              </div>
+             )}
+          </div>
+
 
         {/* ── AI Insight Card ───────────────────────────────────────────── */}
         <div className="bg-gradient-to-br from-[#0A1128] to-blue-900 rounded-[2.5rem] p-10 text-white shadow-xl flex flex-col justify-between group overflow-hidden relative">

@@ -6,6 +6,7 @@ from app.utils.security import get_current_user
 from app.services.analytics_service import (
     get_analytics_summary_from_db,
     get_transactions_for_pdf,
+    get_top_categories,
 )
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
@@ -30,6 +31,18 @@ def get_analytics_summary(
     """
     user_id = current_user["user_id"]
     return get_analytics_summary_from_db(user_id, period)
+
+
+@router.get("/top-categories")
+def get_analytics_top_categories(
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Returns top 5 expense categories with percentage of total spend
+    over the last 30 days.
+    """
+    user_id = current_user["user_id"]
+    return get_top_categories(user_id)
 
 
 @router.get("/export")
