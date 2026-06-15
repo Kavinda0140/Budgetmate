@@ -1,3 +1,4 @@
+import { useTheme } from '../context/ThemeContext';
 import { useEffect, useRef, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { User, Lock, Bell, Globe, ShieldCheck, CreditCard, ChevronRight, Camera, Loader2, Eye, EyeOff, X } from 'lucide-react';
@@ -6,6 +7,7 @@ import { getProfile, updateProfile, changePassword } from '../services/settingsS
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
+  const { darkMode, toggleDarkMode } = useTheme();
   const [profile, setProfile] = useState({
     full_name: '',
     email: '',
@@ -270,6 +272,40 @@ const Settings = () => {
             <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm animate-in fade-in duration-300">
                <h4 className="text-lg font-black text-slate-900 mb-4">Notifications</h4>
                <p className="text-slate-500 text-sm font-medium">Manage how and when you receive alerts from BudgetMate.</p>
+            </div>
+          )}
+  
+          {activeTab === 'preferences' && (
+            <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-sm animate-in fade-in duration-300">
+              <h4 className="text-lg font-black text-slate-900 mb-2">Preferences</h4>
+              <p className="text-slate-500 text-sm font-medium mb-8">Customize your BudgetMate experience.</p>
+
+              <div className="flex items-center justify-between p-6 rounded-3xl border border-slate-100 bg-slate-50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-2xl">
+                    {darkMode ? '🌙' : '☀️'}
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">Dark Mode</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5 text-slate-400">
+                      {darkMode ? 'Dark theme is ON' : 'Light theme is ON'}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={toggleDarkMode}
+                  className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none ${
+                    darkMode ? 'bg-blue-600' : 'bg-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
+                      darkMode ? 'translate-x-7' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           )}
 
