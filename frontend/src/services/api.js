@@ -1,8 +1,15 @@
 import axios from 'axios';
 
+const LOCAL_API_URL = 'http://127.0.0.1:8000';
+const NGINX_API_URL = '/api';
+
+const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+export const API_BASE_URL = import.meta.env.VITE_API_URL || (isLocalHost ? LOCAL_API_URL : NGINX_API_URL);
+
 // Create Axios instance
 const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
+    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }
