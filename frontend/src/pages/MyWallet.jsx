@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { Landmark, Wallet, Plus, X, Loader2, Trash2, Pencil, CreditCard } from 'lucide-react';
-import { getUserAccounts } from '../services/transactionService';
-
-const API = "http://localhost:8000";
-
-const authHeaders = () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${localStorage.getItem("token")}`,
-});
+import API from '../services/api';
 
 // ── decode JWT to get the user's name ──────────────────────────────────────
 const getLoggedInName = () => {
@@ -110,11 +103,9 @@ const MyWallet = () => {
   const fetchAccounts = async () => {
     setLoading(true); setError(null);
     try {
-      const res = await fetch(`${API}/accounts/`, { headers: authHeaders() });
-      if (!res.ok) throw new Error("Failed to load accounts");
-      const data = await res.json();
+      const res = await API.get('/accounts/');
       console.log("test");
-      setAccounts(data);
+      setAccounts(res.data);
       setSelectedAcc(0);
     } catch (e) { setError(e.message); }
     finally { setLoading(false); }
@@ -174,8 +165,6 @@ const MyWallet = () => {
     setSubmitting(true); setFormError(null);
     try {
       const isEdit = modalMode === "edit";
-      const url    = isEdit ? `${API}/accounts/${editingId}` : `${API}/accounts/`;
-      const method = isEdit ? "PUT" : "POST";
 
       const payload = {
         ...form,
@@ -186,18 +175,15 @@ const MyWallet = () => {
       };
       delete payload.cvv;
 
-      const res = await fetch(url, {
-        method,
-        headers: authHeaders(),
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || "Request failed");
+      if (isEdit) {
+        await API.put(`/accounts/${editingId}`, payload);
+      } else {
+        await API.post('/accounts/', payload);
       }
+
       closeModal();
       await fetchAccounts();
-    } catch (e) { setFormError(e.message); }
+    } catch (e) { setFormError(e.response?.data?.detail || e.message); }
     finally { setSubmitting(false); }
   };
 
@@ -206,7 +192,7 @@ const MyWallet = () => {
     e.stopPropagation();
     if (!window.confirm("Remove this account?")) return;
     try {
-      await fetch(`${API}/accounts/${accountId}`, { method: "DELETE", headers: authHeaders() });
+      await API.delete(`/accounts/${accountId}`);
       setAccounts(prev => prev.filter(a => a.id !== accountId));
       setSelectedAcc(0);
     } catch { alert("Could not delete account."); }
