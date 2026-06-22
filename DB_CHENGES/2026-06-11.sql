@@ -1,4 +1,4 @@
-﻿--------------------------------------------------------
+--------------------------------------------------------
 --  File created - Thursday-June-11-2026   
 --------------------------------------------------------
 DROP SEQUENCE "ADMIN"."DBTOOLS$EXECUTION_HISTORY_SEQ";
@@ -375,7 +375,7 @@ Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (81
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (2,'dishan shanuka','dishans351@gmail.com','$2b$12$qP5KXm1rdMaFmqrLbrw29.UOFVOi3kwvm2J4VPVAInWvBbRFSSqjy',to_timestamp('26-APR-26 06.53.25.268071000 PM','DD-MON-RR HH.MI.SSXFF AM'));
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (61,'Bhashitha Wanasinghe','bashitha@company.com','$2b$12$JQUuVhrDhNnsGqmxSVv4Mum6eKqeZQyddyouH6z6Q/QFx4iYpYlSO',to_timestamp('10-MAY-26 08.52.40.126811000 PM','DD-MON-RR HH.MI.SSXFF AM'));
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (41,'dishan sh','udshanuka11@gmail.com','$2b$12$Af1CvltVLSuO8xswSS/8f.2W/8sJ7Rg74nWjOFhyMCNuskfaTcN8m',to_timestamp('27-APR-26 08.39.41.156755000 PM','DD-MON-RR HH.MI.SSXFF AM'));
-Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (101,'John Doe','john@example.com','hash123',to_timestamp('12-MAY-26 05.08.26.004688000 PM','DD-MON-RR HH.MI.SSXFF AM'));
+Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (101,'Kasun Perera','kasun@example.com','hash123',to_timestamp('12-MAY-26 05.08.26.004688000 PM','DD-MON-RR HH.MI.SSXFF AM'));
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (102,'Alice Brown','alice@example.com','hash234',to_timestamp('12-MAY-26 05.08.26.005919000 PM','DD-MON-RR HH.MI.SSXFF AM'));
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (103,'Michael Silva','michael@example.com','hash345',to_timestamp('12-MAY-26 05.08.26.007088000 PM','DD-MON-RR HH.MI.SSXFF AM'));
 Insert into ADMIN.USERS (ID,FULL_NAME,EMAIL,PASSWORD_HASH,CREATED_AT) values (104,'Emma Watson','emma@example.com','hash456',to_timestamp('12-MAY-26 05.08.26.008239000 PM','DD-MON-RR HH.MI.SSXFF AM'));
@@ -724,7 +724,7 @@ BEGIN
     );
 
     INSERT INTO users (id, full_name, email, password_hash)
-    VALUES (101, 'John Doe', 'john@example.com', 'hash123');
+    VALUES (101, 'Kasun Perera', 'kasun@example.com', 'hash123');
 
     INSERT INTO users (id, full_name, email, password_hash)
     VALUES (102, 'Alice Brown', 'alice@example.com', 'hash234');

@@ -64,7 +64,7 @@ const Register = ({ isOpen, onClose, openLogin }) => {
             <label className="text-[10px] font-bold text-gray-400 uppercase">Full Name</label>
             <div className="flex items-center border-2 border-gray-50 rounded-xl px-3 py-2 mt-1 focus-within:border-blue-900">
               <User size={18} className="text-gray-400 mr-2" />
-              <input type="text" placeholder="John Doe" className="w-full outline-none text-sm" value={name} onChange={(e) => setName(e.target.value)} required />
+              <input type="text" placeholder="Kasun Perera" className="w-full outline-none text-sm" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           </div>
 
