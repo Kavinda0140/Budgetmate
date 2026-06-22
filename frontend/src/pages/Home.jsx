@@ -21,6 +21,7 @@ import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import VerifyOTP from './VerifyOTP';
 import API from '../services/api';
+import Interactive3DScene from '../components/Interactive3DScene';
 
 /* ─────────────────────────────────────────────
    ANIMATION HOOK: triggers when element enters viewport
@@ -143,8 +144,6 @@ const Home = () => {
   const [heroVisible, setHeroVisible] = useState(false);
   // Tab change animation key
   const [tabKey, setTabKey] = useState(0);
-  // 3D Model scene load state
-  const [modelLoaded, setModelLoaded] = useState(false);
 
   useEffect(() => {
     // Trigger hero animation on mount
@@ -158,22 +157,7 @@ const Home = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Listen for model-viewer load completion
-  useEffect(() => {
-    const viewer = document.getElementById('hero-3d-model-viewer');
-    if (!viewer) return;
 
-    const handleLoad = () => {
-      setModelLoaded(true);
-    };
-
-    viewer.addEventListener('load', handleLoad);
-    return () => {
-      if (viewer) {
-        viewer.removeEventListener('load', handleLoad);
-      }
-    };
-  }, [heroVisible]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -419,30 +403,7 @@ const Home = () => {
           <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-indigo-500/10 rounded-[2rem] sm:rounded-[2.5rem] blur-xl -z-10 animate-pulse"></div>
           
           <div className="relative w-full h-full bg-white/5 dark:bg-slate-900/40 backdrop-blur-md rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200/50 dark:border-white/10 shadow-2xl overflow-hidden flex items-center justify-center">
-            
-            {/* Loading skeleton placeholder */}
-            {!modelLoaded && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4 bg-white/80 dark:bg-slate-950/80 z-20 transition-opacity duration-500">
-                <div className="w-12 h-12 border-4 border-blue-600/35 border-t-blue-600 rounded-full animate-spin"></div>
-                <div className="text-center space-y-1">
-                  <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Loading 3D Model</p>
-                  <p className="text-[10px] text-slate-400/80 font-medium">Preparing interactive elements...</p>
-                </div>
-              </div>
-            )}
-
-            {/* Google Model Viewer component */}
-            <model-viewer
-              id="hero-3d-model-viewer"
-              src="/low-poly_truck_car_drifter.glb"
-              alt="Low-poly truck car drifter"
-              auto-rotate
-              camera-controls
-              shadow-intensity="1.5"
-              interaction-prompt="none"
-              touch-action="pan-y"
-              class="w-full h-full"
-            ></model-viewer>
+            <Interactive3DScene />
           </div>
         </div>
       </section>
